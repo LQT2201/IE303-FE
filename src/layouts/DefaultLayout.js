@@ -5,9 +5,9 @@ import Footer from "./components/Footer";
 
 const DefaultLayout = ({children}) => {
     return (
-        <Box>
+        <Box  bgcolor="#F0F0F0">
             <Header/>
-            <Box marginTop="65px" bgcolor="transparent">
+            <Box marginTop="65px">
                 {children}
             </Box>
             <Footer/>

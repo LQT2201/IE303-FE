@@ -1,9 +1,9 @@
 import React from 'react'
-import { Grid, Box, Typography, CardMedia, Link } from '@mui/material'
+import { Grid, Box, Typography, CardMedia, Link, Container } from '@mui/material'
 
 const Footer = () => {
   return (
-    <Box bgcolor={'#ffffff'} borderTop={5} borderColor={'#C92127'} marginTop={10}>
+    <Box marginTop={10} sx={{borderTop:5, borderColor:"C92127"}} >
       <Grid
         container
         spacing={2}
@@ -11,8 +11,8 @@ const Footer = () => {
           marginTop: 10,
           display: 'flex',
           justifyContent: 'center',
-          marginLeft: 20,
-          padding: 5
+          padding: 5,
+          paddingX: 0,
         }}
       >
         <Grid item md={3}>

@@ -8,6 +8,7 @@ import React from 'react'
 import Book from 'src/components/Book'
 import DefaultLayout from 'src/layouts/DefaultLayout'
 import page from 'src/pages/test2'
+import formater from 'src/utils/formatCurrency'
 
 const ProductDetail = params => {
   const books = [
@@ -131,7 +132,7 @@ const ProductDetail = params => {
 
           <Box display='flex'>
             <Typography color='#C92127' fontWeight={600} fontSize={24}>
-              200 đ
+              {formater.format(2000)}
             </Typography>
             <Typography
               sx={{ textDecoration: 'line-through' }}
@@ -144,7 +145,7 @@ const ProductDetail = params => {
               textAlign={'center'}
               display={'flex'}
             >
-              500 đ
+              {formater.format(1000)}
             </Typography>
             <Box className='sale-percent' component='span' alignItems={'center'} textAlign={'center'} display={'flex'}>
               10%

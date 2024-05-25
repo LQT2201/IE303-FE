@@ -9,13 +9,35 @@ import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
+import { Book } from 'mdi-material-ui'
+import { Category } from '@mui/icons-material'
 
 const navigation = () => {
   return [
     {
-      title: 'Dashboard',
+      title: 'Bảng điều khiển',
       icon: HomeOutline,
-      path: '/'
+      path: '/dashboard'
+    },
+    {
+      title:"Sách",
+      icon:Book,
+      path:"/admin/books"
+    },
+    {
+      title:"Thể loại",
+      icon:Category,
+      path:"/admin/genres"
+    },
+    {
+      title:"Đơn hàng",
+      icon:Book,
+      path:"/admin/orders"
+    },
+    {
+      title:"Tài khoản",
+      icon:Book,
+      path:"/admin/users"
     },
     {
       title: 'Account Settings',

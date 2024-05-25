@@ -7,7 +7,6 @@ import 'react-multi-carousel/lib/styles.css'
 import React from 'react'
 import Book from 'src/components/Book'
 import DefaultLayout from 'src/layouts/DefaultLayout'
-import page from 'src/pages/test2'
 import formater from 'src/utils/formatCurrency'
 
 const ProductDetail = params => {

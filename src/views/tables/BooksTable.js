@@ -23,22 +23,16 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9)
 ]
 
-const TableBasic = () => {
+
+const BooksTable = ({headTables}) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
         <TableHead>
           <TableRow>
-            <TableCell>Tên sách</TableCell>
-            <TableCell align='center'>Giá</TableCell>
-            <TableCell align='center'>Giá sale</TableCell>
-            <TableCell align='center'>Thể loại</TableCell>
-
-            <TableCell align='center'>Tác giả</TableCell>
-            <TableCell align='center'>Trong kho</TableCell>
-            <TableCell align='center'>Đã bán</TableCell>
-            <TableCell align='center'>Đánh giá</TableCell>
-            <TableCell align='center'>Thao tác</TableCell>
+            {headTables.map(head => (
+              <TableCell align='center' key={head}> {head}</TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -51,7 +45,7 @@ const TableBasic = () => {
                 }
               }}
             >
-              <TableCell component='th' scope='row'>
+              <TableCell align='center' component='th' scope='row'>
                 {row.name}
               </TableCell>
               <TableCell align='center'>{formater.format(row.calories)}</TableCell>
@@ -77,4 +71,4 @@ const TableBasic = () => {
   )
 }
 
-export default TableBasic
+export default BooksTable

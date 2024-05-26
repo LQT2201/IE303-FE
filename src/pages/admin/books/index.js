@@ -1,11 +1,12 @@
-import { Card, CardHeader, Grid,Typography } from '@mui/material'
+import { Button, Card, CardContent, CardHeader, Grid,Typography } from '@mui/material'
 import React from 'react'
-import Link from '@mui/material/Link'
-import TableBasic from 'src/views/tables/TableBasic'
+import Link from '@mui/material/Link';
+import TableBooks from './TableBooks';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 
 const Book = () => {
-  const headTables = ["Tên sách", "giá", "giá sale", "thể loại", "tác giả", "trong kho", "Đã bán", "đánh giá", "thao tác"]
+
   const createData = (name, calories, fat, carbs, protein) => {
     return { name, calories, fat, carbs, protein }
   }
@@ -22,8 +23,15 @@ const Book = () => {
         
         <Grid item xs={12}> 
             <Card>
-            <CardHeader title='Sản phẩm' titleTypographyProps={{ variant: 'h6', color:""}} />
-            <TableBasic headTables={headTables} rows={rows} />
+              <CardContent>
+                <Link href='/admin/books/add'> 
+                  <Button>
+                    <AddBoxIcon/>
+                    Thêm sách mới
+                  </Button>
+                </Link>
+              </CardContent>
+            <TableBooks rows={rows} />
             </Card>
         </Grid>
     </Grid>

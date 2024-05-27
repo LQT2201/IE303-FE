@@ -6,12 +6,12 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
-import Book from 'src/components/Book'
+
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 
-const SearchPage = ({ book }) => {
+const SearchPage = () => {
   const [value, setValue] = React.useState('')
   const [price1, setPrice1] = React.useState(0)
   const [price2, setPrice2] = React.useState(10000000000)
@@ -118,21 +118,9 @@ const SearchPage = ({ book }) => {
               </Box>
             </Box>
             <Grid container>
-              <Grid item md={3} marginBottom={2}>
+              {/* <Grid item md={3} marginBottom={2}>
                 <Book />
-              </Grid>
-              <Grid item md={3}>
-                <Book />
-              </Grid>
-              <Grid item md={3}>
-                <Book />
-              </Grid>
-              <Grid item md={3}>
-                <Book />
-              </Grid>
-              <Grid item md={3}>
-                <Book />
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
         </Grid>

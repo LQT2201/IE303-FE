@@ -8,70 +8,61 @@ import React from 'react'
 import Book from 'src/components/Book'
 import DefaultLayout from 'src/layouts/DefaultLayout'
 import formater from 'src/utils/formatCurrency'
-
+import { useRouter } from 'next/router'
+import Link from 'next/link';
+const BASE_URL = 'http://127.0.0.1:8080/api/book'
 const ProductDetail = params => {
-  const books = [
-    {
-      id: 2,
-      bookName: 'Tuổi Thơ Dữ Dội - Tập 1 (Tái Bản 2019)',
-      salePrice: 15000,
-      oldPrice: 20000,
-      rating: 4,
-      soldQty: 100,
-      image: 'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'
-    },
-    {
-      id: 1,
-      bookName: 'Tuổi Thơ Dữ Dội - Tập 2 (Tái Bản 2020)',
-      salePrice: 16000,
-      oldPrice: 20000,
-      rating: 5,
-      soldQty: 100,
-      image: 'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'
+  const router = useRouter()
+  const [book, setBook] = React.useState(null)
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [error, setError] = React.useState(false)
+  const [relatedBooks, setRelatedBooks] = React.useState(null)
+  React.useEffect(() => {
+    const fetchBook = async() => {
+      if(router.query.slug) {
+        try {
+          let resp = await fetch(`${BASE_URL}/${router.query.slug}`)
+          const book = await resp.json()
+          setBook(book)
+          setIsLoading(false)
+          resp = await fetch(`${BASE_URL}?genre=${book.genre}&size=5`)
+          const relatedBooks = await resp.json();
+          setRelatedBooks(relatedBooks.content)
+        } catch (error) {
+          setError(true)
+        }
+      }
     }
-  ]
-  console.log(params)
+    fetchBook()
+  },[router.query.slug])
+  if(error) 
+    return (
+    <p>Không tìm thấy sản phẩm</p>
+    )
+  if(isLoading) 
+    return (
+      <p>Đang tải</p>
+    )
   return (
     <Container maxWidth='lg'>
-      <Box>đường dẫn tới product!!!</Box>
-      <Grid container spacing={2} sx={{ backgroundColor: '#ffffff' }}>
+      <Grid container sx={{ backgroundColor: '#ffffff' }}>
         <Grid item md={5}>
           <Box>
             <Box>
-              <CardMedia component='img' src={'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'} />
+              <CardMedia 
+                component='img' 
+                src={book.images[0]} 
+              />
             </Box>
             <Box>
               <Carousel responsive={responsive}>
-                <CardMedia
-                  sx={{ height: 100 }}
-                  component='img'
-                  src={'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'}
-                />
-                <CardMedia
-                  sx={{ height: 100 }}
-                  component='img'
-                  src={'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'}
-                />
-                <CardMedia
-                  sx={{ height: 100 }}
-                  component='img'
-                  src={'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'}
-                />
-                <CardMedia
-                  sx={{ height: 100 }}
-                  component='img'
-                  src={'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'}
-                />
-                <CardMedia
-                  sx={{ height: 100 }}
-                  component='img'
-                  src={'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'}
-                />
-                <CardMedia
-                  sx={{ height: 100 }}
-                  component='img'
-                  src={'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'}
-                />
+                {book.images.map((img) => {
+                  return (<CardMedia
+                    sx={{ height: 100 }}
+                    component='img'
+                    src={img}
+                  />)
+                })}
               </Carousel>
             </Box>
           </Box>
@@ -106,32 +97,30 @@ const ProductDetail = params => {
         <Grid item md={7}>
           <Box>
             <Typography lineHeight={2.5} color='#C92127' fontSize={27} fontWeight={700}>
-              Tiêu đề
+              {book.title}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex' }}>
             <Grid item md={6}>
-              Nhà cung cấp:
-            </Grid>
-            <Grid item md={6}>
-              Tác giả:
+              <Link href={`/author/${book.author}`}>
+                <p>Tác giả {`${book.author}`}</p>
+              </Link>
             </Grid>
           </Box>
           <Box sx={{ display: 'flex' }}>
             <Grid item md={6}>
-              Nhà xuất bản:
-            </Grid>
-            <Grid item md={6}>
-              Hình thức bìa:
+              Nhà xuất bản: {book.publisher}
             </Grid>
           </Box>
           <Box>
-            <Rating></Rating>
+          <Grid item md={6}>
+              Thông tin: {book.description}
+            </Grid>
           </Box>
 
           <Box display='flex'>
             <Typography color='#C92127' fontWeight={600} fontSize={24}>
-              {formater.format(2000)}
+              {formater.format(book.price)}
             </Typography>
             <Typography
               sx={{ textDecoration: 'line-through' }}
@@ -144,49 +133,12 @@ const ProductDetail = params => {
               textAlign={'center'}
               display={'flex'}
             >
-              {formater.format(1000)}
             </Typography>
-            <Box className='sale-percent' component='span' alignItems={'center'} textAlign={'center'} display={'flex'}>
-              10%
-            </Box>
-          </Box>
-
-          <Box sx={{ display: 'flex' }}>
-            <Grid item md={3}>
-              Thời gian giao hàng
-            </Grid>
-            <Grid item md={9}>
-              <Box>
-                <Box sx={{ display: 'flex' }}>
-                  <Box>Giao hàng đến</Box>
-                  <Box fontWeight={600} marginLeft={3}>
-                    Place
-                  </Box>
-                  <Box
-                    sx={{
-                      color: '#2489F4',
-                      transition: 'background-color 0.3s ease',
-                      ':hover': {
-                        cursor: 'pointer'
-                      }
-                    }}
-                  >
-                    Thay đổi
-                  </Box>
-                </Box>
-                <Box sx={{ display: 'flex' }}>
-                  <Box>Thời gian dự kiến</Box>
-                  <Box fontWeight={600} marginLeft={3}>
-                    Time
-                  </Box>
-                </Box>
-              </Box>
-            </Grid>
           </Box>
           <Box sx={{ display: 'flex' }}>
             <Grid item md={2} display={'flex'} alignItems={'center'} textAlign={'center'}>
               <Box fontWeight={600} marginLeft={3}>
-                Số lượng:
+                Số lượng: {book.stock}
               </Box>
             </Grid>
             <Grid item md={3}>
@@ -195,27 +147,14 @@ const ProductDetail = params => {
           </Box>
         </Grid>
       </Grid>
-      <Grid container spacing={2} sx={{ backgroundColor: '#ffffff', marginTop: 10 }}>
+      <Grid container sx={{ backgroundColor: '#ffffff', marginTop: 10 }}>
         <Typography fontSize={20} fontWeight={600} padding={5}>
           Sản phẩm liên quan
         </Typography>
 
         <Grid container marginTop={5}>
-          {books.map(book => (
-            <Grid item md={2.4} key={book.id} spacing={1}>
-              <Book book={book} />
-            </Grid>
-          ))}
-        </Grid>
-      </Grid>
-      <Grid container spacing={2} sx={{ backgroundColor: '#ffffff', marginTop: 10 }}>
-        <Typography fontSize={20} fontWeight={600} padding={5}>
-          Sản phẩm giới thiệu
-        </Typography>
-
-        <Grid container marginTop={5}>
-          {books.map(book => (
-            <Grid item md={2.4} key={book.id} spacing={1}>
+          {relatedBooks && relatedBooks.map(book => (
+            <Grid item md={2.4} key={book.id}>
               <Book book={book} />
             </Grid>
           ))}

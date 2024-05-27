@@ -81,7 +81,7 @@ const AddBook = () => {
       setImages(imgs)
     }
   }
-  const postData = async(form) => {
+  const postData = async (form) => {
     const token = localStorage.getItem('token');
     try {
       const resp = await fetch(`${BASE_URL}/book`, {
@@ -106,7 +106,7 @@ const AddBook = () => {
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
             <p>Tác giả</p>
             <select id="authors" name="author" >
-              {authors && 
+              {authors &&
                 authors.map(author => {
                   return (
                     <option key={author.id} value={`${author.name}`}>{author.name}</option>
@@ -118,7 +118,7 @@ const AddBook = () => {
           <Grid item xs={12} sm={3}>
             <p>Thể loại</p>
             <select id="genres" name="genre">
-            {genres && 
+              {genres &&
                 genres.map(genre => {
                   return (
                     <option key={genre.id} value={`${genre.name}`}>{genre.name}</option>
@@ -128,23 +128,23 @@ const AddBook = () => {
             </select>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <input type='text' name='description' placeholder='Mô tả sách'/>
+            <input type='text' name='description' placeholder='Mô tả sách' />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <input type='number' name='stock' placeholder='Số lượng kho'/>
+            <input type='number' name='stock' placeholder='Số lượng kho' />
           </Grid>
           <Grid item xs={12} sm={3}>
-            <input type='number' name='pages' placeholder='Số trang sách'/>
+            <input type='number' name='pages' placeholder='Số trang sách' />
           </Grid>
           <Grid item xs={12} sm={3}>
-            <input type='number' name='price' placeholder='Giá sách'/>
+            <input type='number' name='price' placeholder='Giá sách' />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <input type='text' name='publisher' placeholder='Nhà xuất bản'/>
+            <input type='text' name='publisher' placeholder='Nhà xuất bản' />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
             <p>Ngày xuất bản</p>
-            <input type='date' name='publishDate' defaultValue={new Date().toISOString().slice(0, 10)}/>
+            <input type='date' name='publishDate' defaultValue={new Date().toISOString().slice(0, 10)} />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
             {images.map((img, index) => {
@@ -183,7 +183,7 @@ const AddBook = () => {
               Thêm
             </Button>
             <Button type='reset' variant='outlined' color='secondary'
-              onClick={(e) => { document.getElementById('book-form').reset()}}>
+              onClick={(e) => { document.getElementById('book-form').reset() }}>
               Reset
             </Button>
           </Grid>

@@ -1,5 +1,5 @@
 // ** React Imports
-import { forwardRef, useState } from 'react'
+import { forwardRef, useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
@@ -22,132 +22,168 @@ import DatePicker from 'react-datepicker'
 
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import { Typography, Box} from '@mui/material'
+import { Typography, Box } from '@mui/material'
 
 const CustomInput = forwardRef((props, ref) => {
   return <TextField inputRef={ref} label='Birth Date' fullWidth {...props} />
 })
 
 const ImgStyled = styled('img')(({ theme }) => ({
-    width: 120,
-    height: 120,
-    marginRight: theme.spacing(6.25),
-    borderRadius: theme.shape.borderRadius
-  }))
-  
-  const ButtonStyled = styled(Button)(({ theme }) => ({
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-      textAlign: 'center'
-    }
-  })) 
-  
-  const ResetButtonStyled = styled(Button)(({ theme }) => ({
-    marginLeft: theme.spacing(4.5),
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-      marginLeft: 0,
-      textAlign: 'center',
-      marginTop: theme.spacing(4)
-    }
-  }))
+  width: 120,
+  height: 120,
+  marginRight: theme.spacing(6.25),
+  borderRadius: theme.shape.borderRadius
+}))
 
+const ButtonStyled = styled(Button)(({ theme }) => ({
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+    textAlign: 'center'
+  }
+}))
+
+const ResetButtonStyled = styled(Button)(({ theme }) => ({
+  marginLeft: theme.spacing(4.5),
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+    marginLeft: 0,
+    textAlign: 'center',
+    marginTop: theme.spacing(4)
+  }
+}))
+const BASE_URL = 'http://127.0.0.1:8080/api'
 const AddBook = () => {
-  // ** State
-  const [date, setDate] = useState(null)
-  const [imgSrc, setImgSrc] = useState('/images/avatars/1.png')
-  
-  const onChange = file => {
-    const reader = new FileReader()
+  const [images, setImages] = useState([])
+  const [authors, setAuthors] = useState([])
+  const [genres, setGenres] = useState([])
+  useEffect(async () => {
+    const fetchGenres = fetch(`${BASE_URL}/genre`).then(resp => resp.json())
+    const fetchAuthors = fetch(`${BASE_URL}/author`).then(resp => resp.json())
+    const [genres, authors] = await Promise.all([fetchGenres, fetchAuthors]);
+    setAuthors(authors)
+    setGenres(genres)
+  }, [])
+  const fileOnChange = async file => {
     const { files } = file.target
+    const readFile = async (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.readAsDataURL(file)
+      })
+    }
     if (files && files.length !== 0) {
-      reader.onload = () => setImgSrc(reader.result)
-      reader.readAsDataURL(files[0])
+      const imgs = []
+      for (const file of files) {
+        const result = await readFile(file)
+        imgs.push(result)
+      }
+      setImages(imgs)
     }
   }
-
+  const postData = async(form) => {
+    const token = localStorage.getItem('token');
+    try {
+      const resp = await fetch(`${BASE_URL}/book`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: form
+      })
+      alert('Thêm thành công')
+    } catch (error) {
+      alert('Thêm thất bại')
+    }
+  }
   return (
     <CardContent>
-      <form>
+      <form id='book-form' encType='multipart/form-data'>
         <Grid container spacing={7}>
-            <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-                <TextField
-                fullWidth
-                multiline
-                label='Tên sách'
-                minRows={1}
-                placeholder='Tên sách'
-             />
+          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
+            <input type='text' name='title' label='Tên sách' placeholder='Tên sách' />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <TextField fullWidth label='Tác giả' placeholder='Tác giả' />
+            <p>Tác giả</p>
+            <select id="authors" name="author" >
+              {authors && 
+                authors.map(author => {
+                  return (
+                    <option key={author.id} value={`${author.name}`}>{author.name}</option>
+                  )
+                })
+              }
+            </select>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <TextField fullWidth type='number' label='Giá sách' placeholder='Giá gốc' />
+            <p>Thể loại</p>
+            <select id="genres" name="genre">
+            {genres && 
+                genres.map(genre => {
+                  return (
+                    <option key={genre.id} value={`${genre.name}`}>{genre.name}</option>
+                  )
+                })
+              }
+            </select>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <TextField fullWidth type='number' label='Giá Sale' placeholder='Giá giảm' />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <FormControl fullWidth>
-              <InputLabel id='form-layouts-separator-multiple-select-label'>Thể loại</InputLabel>
-              <Select
-                multiple
-                defaultValue={['English']}
-                id='account-settings-multiple-select'
-                labelId='account-settings-multiple-select-label'
-                input={<OutlinedInput label='Languages' id='select-multiple-language' />}
-              >
-                <MenuItem value='English'>Sách cấm</MenuItem>
-                <MenuItem value='French'>@ten</MenuItem>
-                <MenuItem value='Spanish'>Sách người lớn</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          
-          <Grid item xs={12} sm={3}>
-            <TextField fullWidth label='Trong kho' placeholder='Số lượng sản phẩm' />
+            <input type='text' name='description' placeholder='Mô tả sách'/>
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-                <TextField
-                fullWidth
-                multiline
-                label='Mô tả'
-                minRows={3}
-                placeholder='Mô tả sách'
-             />
+            <input type='number' name='stock' placeholder='Số lượng kho'/>
           </Grid>
+          <Grid item xs={12} sm={3}>
+            <input type='number' name='pages' placeholder='Số trang sách'/>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <input type='number' name='price' placeholder='Giá sách'/>
+          </Grid>
+          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
+            <input type='text' name='publisher' placeholder='Nhà xuất bản'/>
+          </Grid>
+          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
+            <p>Ngày xuất bản</p>
+            <input type='date' name='publishDate' defaultValue={new Date().toISOString().slice(0, 10)}/>
+          </Grid>
+          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
+            {images.map((img, index) => {
+              return (
+                <ImgStyled key={index} src={img} />
+              )
+            })}
 
-          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ImgStyled src={imgSrc} alt='Profile Pic' />
-              <Box>
-                <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
-                  Thêm ảnh
-                  <input
-                    hidden
-                    type='file'
-                    onChange={onChange}
-                    accept='image/png, image/jpeg'
-                    id='account-settings-upload-image'
-                  />
-                </ButtonStyled>
-                <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
-                  Reset
-                </ResetButtonStyled>
-                <Typography variant='body2' sx={{ marginTop: 5 }}>
-                  Chỉ cho phép PNG hoặc JPEG. Kích thước tối đa 800K.
-                </Typography>
-              </Box>
+            <Box>
+              <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
+                Thêm ảnh
+                <input
+                  hidden
+                  type='file'
+                  onChange={fileOnChange}
+                  accept='image/png, image/jpeg'
+                  id='account-settings-upload-image'
+                  name='images'
+                  multiple
+                />
+              </ButtonStyled>
+              <Typography variant='body2' sx={{ marginTop: 5 }}>
+                Chỉ cho phép PNG hoặc JPEG. Kích thước tối đa 800K.
+              </Typography>
             </Box>
+
           </Grid>
-       
-          
           <Grid item xs={12}>
-            <Button variant='contained' sx={{ marginRight: 3.5 }}>
+            <Button variant='contained' sx={{ marginRight: 3.5 }}
+              onClick={() => {
+                const form = document.getElementById('book-form')
+                const formData = new FormData(form)
+                postData(formData)
+              }}
+            >
               Thêm
             </Button>
-            <Button type='reset' variant='outlined' color='secondary' onClick={() => setDate(null)}>
+            <Button type='reset' variant='outlined' color='secondary'
+              onClick={(e) => { document.getElementById('book-form').reset()}}>
               Reset
             </Button>
           </Grid>

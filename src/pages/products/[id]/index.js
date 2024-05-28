@@ -19,22 +19,21 @@ const ProductDetail = params => {
   const [relatedBooks, setRelatedBooks] = React.useState(null)
   React.useEffect(() => {
     const fetchBook = async() => {
-      if(router.query.slug) {
+      if(router.query.id) {
         try {
-          let resp = await fetch(`${BASE_URL}/${router.query.slug}`)
-          const book = await resp.json()
+          let book = await fetch(`${BASE_URL}/${router.query.id}`).then(res => res.json())
           setBook(book)
           setIsLoading(false)
-          resp = await fetch(`${BASE_URL}?genre=${book.genre}`)
-          const relatedBooks = await resp.json();
+          const relatedBooks = await fetch(`${BASE_URL}?genre=${book.genre}`).then(res => res.json())
           setRelatedBooks(relatedBooks)
         } catch (error) {
           setError(true)
+          console.log(error)
         }
       }
     }
     fetchBook()
-  },[router.query.slug])
+  },[router.query.id])
   if(error) 
     return (
     <p>Không tìm thấy sản phẩm</p>

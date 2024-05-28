@@ -8,34 +8,35 @@ import DefaultLayout from 'src/layouts/DefaultLayout'
 import { useRouter } from 'next/router'
 
 const BASE_URL = 'http://127.0.0.1:8080/api'
-const Genre = params => {
+const Author = params => {
   const router = useRouter()
-  const [genre, setGenre] = React.useState(null)
+  const [author, setAuthor] = React.useState(null)
   const [books, setBooks] = React.useState(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const [error, setError] = React.useState(false)
   React.useEffect(() => {
-    const fetching = async() => {
-      if(router.query.name) {
-        try{
-          const genre = await fetch(`${BASE_URL}/genre/${router.query.name}`).then(resp => resp.json())
-          const fetchBooks = await fetch(`${BASE_URL}/book?genre=${genre.name}`).then(resp => resp.json())
-          setGenre(genre)
+    const fetching = async () => {
+      if (router.query.id) {
+        try {
+          const author = await fetch(`${BASE_URL}/author/${router.query.id}`).then(resp => resp.json())
+          const fetchBooks = await fetch(`${BASE_URL}/book?author=${author.name}`).then(resp => resp.json())
+          setAuthor(author)
           setBooks(fetchBooks)
           setIsLoading(false)
         } catch (error) {
+          console.log(error)
           setError(true)
         }
       }
     }
     fetching()
-  },[router.query.name])
-  
-  if(error) 
+  }, [router.query.id])
+
+  if (error)
     return (
-    <p>Không tìm thấy thể loại sách</p>
+      <p>Không tìm thấy tác giả</p>
     )
-  if(isLoading) 
+  if (isLoading)
     return (
       <p>Đang tải</p>
     )
@@ -44,12 +45,20 @@ const Genre = params => {
       <Grid container sx={{ backgroundColor: '#ffffff' }}>
         <Grid item md={5}>
           <Box>
-            {genre.name}
-            {genre.description}
+            {author.name}
+          </Box>
+          <Box>
+            {author.information}
+          </Box>
+          <Box>
+            <CardMedia
+              component='img'
+              src={author.image}
+            />
           </Box>
         </Grid>
       </Grid>
-      {books.content.map((book) => (<Book key={book.id} book={book}/>))}
+      {books.map((book) => (<Book key={book.id} book={book} />))}
     </Container>
   )
 }
@@ -74,6 +83,6 @@ const responsive = {
   }
 }
 
-Genre.getLayout = page => <DefaultLayout> {page} </DefaultLayout>
+Author.getLayout = page => <DefaultLayout> {page} </DefaultLayout>
 
-export default Genre
+export default Author

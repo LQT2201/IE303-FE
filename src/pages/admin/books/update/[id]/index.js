@@ -88,7 +88,7 @@ const UpdateBook = () => {
   const postData = async (form) => {
     const token = localStorage.getItem('token');
     try {
-      const resp = await fetch(`${BASE_URL}/book?id=${book.id}`, {
+      const resp = await fetch(`${BASE_URL}/book/${book.id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`

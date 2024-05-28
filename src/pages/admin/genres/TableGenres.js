@@ -36,7 +36,7 @@ const TableGenres = ({rows}) => {
                 {row.name}
               </TableCell>
               <TableCell align='center'> 
-                <Link href={`/admin/genres/update/${row.name}`}>
+                <Link href={`/admin/genres/update/${row.id}`}>
                     <IconButton color='red'>
                     <BuildIcon sx={{color:"blue"}}/>
                     </IconButton>

@@ -17,7 +17,7 @@ const Category = ({genres}) => {
         <Divider sx={{ color:"red" }}/>
         <Box sx={{display:"grid", gridTemplateColumns:"repeat(8,1fr)"}}> 
             {genres.map((genre) => 
-              (<Link key={genre.id} href={`/genres/${genre.name}`}>
+              (<Link key={genre.id} href={`/genres/${genre.id}`}>
                 <Card >
                 <CardContent sx={{textAlign:"center", padding:"10px 0 0 0 "}}>
                   <Typography 

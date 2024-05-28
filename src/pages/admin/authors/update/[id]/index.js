@@ -89,7 +89,7 @@ const UpdateAuthor = () => {
   const postData = async form => {
     const token = localStorage.getItem('token');
     try {
-      const resp = await fetch(`${BASE_URL}/author`, {
+      const resp = await fetch(`${BASE_URL}/author/${author.id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`

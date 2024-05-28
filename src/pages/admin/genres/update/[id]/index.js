@@ -88,7 +88,7 @@ const UpdateGenre = () => {
             <TextField
               fullWidth
               multiline
-              label='Tên thể loại'
+             
               minRows={1}
               defaultValue={genre.name}
               name='name'
@@ -99,7 +99,7 @@ const UpdateGenre = () => {
             <TextField
               fullWidth
               multiline
-              label='Mô tả'
+              
               minRows={1}
               name='description'
               defaultValue={genre.description}

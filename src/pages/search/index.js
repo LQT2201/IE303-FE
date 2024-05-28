@@ -1,12 +1,10 @@
 import { Container, Grid, Box, Typography, Divider } from '@mui/material'
-import React from 'react'
-import TextField from '@mui/material/TextField'
-import DefaultLayout from 'src/layouts/DefaultLayout'
+import {useState, useEffect} from 'react'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
-
+import DefaultLayout from 'src/layouts/DefaultLayout'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
@@ -22,12 +20,12 @@ const SORT = {
   TITLE_DESC: '{"sort": "DESC", "by": "title"}'
 }
 const SearchPage = () => {
-  const [value, setValue] = React.useState('')
+  const [value, setValue] = useState('')
   const router = useRouter()
-  const [books, setBooks] = React.useState([])
-  const [genres, setGenres] = React.useState([])
-  const [selectedGenres, setSelectedGenres] = React.useState([])
-  React.useEffect(() => {
+  const [books, setBooks] = useState([])
+  const [genres, setGenres] = useState([])
+  const [selectedGenres, setSelectedGenres] = useState([])
+  useEffect(() => {
     let {title, genre, sort, by} = router.query
     let query = '?'
     if(title) query = `${query}&title=${title}`
@@ -160,10 +158,6 @@ const SearchPage = () => {
   )
 }
 
-const sort_by = [
-  { label: 'Giá tăng dần', value: 2009 },
-  { label: 'Giá giảm dần', value: 1975 }
-]
 
 SearchPage.getLayout = page => <DefaultLayout> {page} </DefaultLayout>
 

@@ -1,5 +1,5 @@
-import { Box, CardContent, CardMedia, Container, Grid, Typography, Link } from '@mui/material'
-import React from 'react'
+import { Box, CardContent, CardMedia, Container, Grid, Typography } from '@mui/material'
+import Link from 'next/link';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import Divider from '@mui/material/Divider';
 import Card from '@mui/material/Card';

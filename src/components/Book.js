@@ -1,6 +1,5 @@
 import { Box, Card, CardContent, CardMedia, Rating, Typography } from '@mui/material'
 import Link from 'next/link';
-import React from 'react'
 import formater from 'src/utils/formatCurrency';
 
 
@@ -15,9 +14,9 @@ const Book = ({ book }) => {
     }}>
       <Box sx={{ justifyContent: "center", alignItems: "center", textAlign: "center", display: "flex", overflow: "hidden" }}>
         <Link href={`/products/${encodeURIComponent(book.id)}`}>
-          <CardMedia
-            sx={{ maxWidth: "190px", maxHeight: "190px", cursor: "pointer" }}
-            component="img"
+          <img
+            height={'150'}
+            sx={{cursor:'pointer'}}
             src={book.images[0]}
           />
         </Link>

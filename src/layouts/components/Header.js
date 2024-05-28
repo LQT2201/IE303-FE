@@ -1,15 +1,15 @@
-import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import { useState} from 'react';
+import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import { Container, Grid, Link, TextField } from '@mui/material';
-import { SelectSearch } from 'mdi-material-ui';
+import { Container, Grid, Link } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -59,7 +59,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function SearchAppBar() {
 
-  const [search,setSearch] = React.useState("");
+  const [search,setSearch] = useState("");
 
   return (
     <AppBar sx={{background:"#ffffff"}}>
@@ -81,28 +81,15 @@ export default function SearchAppBar() {
               <Search>
                 <StyledInputBase
                   placeholder="Tìm kiếm ..."
-                  value={search}
                   onChange={e => setSearch(e.target.value)}
                 />
-
-                {
-                  search ? 
-                  <SearchIconWrapper>
-                    <Link href={`/search/${search}`}> 
+                <SearchIconWrapper>
+                    <Link href={`/search${search ? `?title=${search}` : ''}`}> 
                       <IconButton color='white'>
                         <SearchIcon sx={{color:"white"}}/>
                       </IconButton>
                     </Link>
                   </SearchIconWrapper>
-                  : 
-                  <SearchIconWrapper>
-                    <IconButton color='white'>
-                      <SearchIcon sx={{color:"white"}}/>
-                    </IconButton>
-                  </SearchIconWrapper>
-                }
-
-                
              </Search>
             </Grid>
             <Grid item md={1}/>
@@ -111,7 +98,7 @@ export default function SearchAppBar() {
               <Link href="/cart">
               <Box flexDirection="column" display="flex">
                 <IconButton sx={{padding:'0px'}}>
-                  <NotificationsOutlinedIcon/>
+                  <ShoppingCartOutlinedIcon/>
                 </IconButton>
                 <Typography component="span" sx={{fontSize:"13px", lineHeight:"18px", color:"#7A7E7F"}}>
                   Giỏ hàng
@@ -121,7 +108,7 @@ export default function SearchAppBar() {
               <Link href="/profile">
               <Box flexDirection="column" display="flex">
                 <IconButton sx={{padding:'0px'}}>
-                  <NotificationsOutlinedIcon/>
+                  <AccountBoxOutlinedIcon/>
                 </IconButton>
                 <Typography component="span" sx={{fontSize:"13px", lineHeight:"18px", color:"#7A7E7F"}}>
                   Tài khoản

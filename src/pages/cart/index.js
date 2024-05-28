@@ -10,7 +10,6 @@ const BASE_URL = 'http://127.0.0.1:8080/api'
 const CartPage = () => {
   const [token, setToken] = useState('')
   const [cart, setCart] = useState([])
-  const [address, setAddress] = useState('')
 
   const updateCart = async (newCart) => {
     await fetch(`${BASE_URL}/user/cart`, {

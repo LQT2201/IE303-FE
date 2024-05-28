@@ -1,28 +1,12 @@
-// ** React Imports
 import { forwardRef, useState, useEffect } from 'react'
-
-// ** MUI Imports
-import Grid from '@mui/material/Grid'
-import Radio from '@mui/material/Radio'
-import Select from '@mui/material/Select'
-import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import FormLabel from '@mui/material/FormLabel'
-import InputLabel from '@mui/material/InputLabel'
-import RadioGroup from '@mui/material/RadioGroup'
-import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import FormControlLabel from '@mui/material/FormControlLabel'
+import {
+  Grid, Radio, Select, Button, MenuItem, TextField, FormLabel,
+  InputLabel, RadioGroup, CardContent, FormControl, OutlinedInput,
+  FormControlLabel, Typography, Box
+} from '@mui/material'
 import { styled } from '@mui/material/styles'
-
-// ** Third Party Imports
 import DatePicker from 'react-datepicker'
-
-// ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import { Typography, Box } from '@mui/material'
 
 const CustomInput = forwardRef((props, ref) => {
   return <TextField inputRef={ref} label='Birth Date' fullWidth {...props} />
@@ -51,6 +35,26 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
     marginTop: theme.spacing(4)
   }
 }))
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  width: '100%',
+  margin: theme.spacing(1, 0),
+}))
+
+const StyledSelect = styled(Select)(({ theme }) => ({
+  width: '100%',
+  margin: theme.spacing(1, 0),
+}))
+
+const StyledInput = styled('input')(({ theme }) => ({
+  width: '100%',
+  padding: theme.spacing(1),
+  margin: theme.spacing(1, 0),
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${theme.palette.divider}`,
+  fontSize: '16px'
+}))
+
 const BASE_URL = 'http://127.0.0.1:8080/api'
 const AddBook = () => {
   const [images, setImages] = useState([])
@@ -100,59 +104,58 @@ const AddBook = () => {
     <CardContent>
       <form id='book-form' encType='multipart/form-data'>
         <Grid container spacing={7}>
-          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <input type='text' name='title' label='Tên sách' placeholder='Tên sách' />
+          <Grid item xs={12} sm={6} >
+            <FormLabel>Tên sách</FormLabel>
+            <StyledTextField name='title'  />
           </Grid>
-          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <p>Tác giả</p>
-            <select id="authors" name="author" >
-              {authors &&
-                authors.map(author => {
-                  return (
-                    <option key={author.id} value={`${author.name}`}>{author.name}</option>
-                  )
-                })
-              }
-            </select>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <p>Thể loại</p>
-            <select id="genres" name="genre">
-              {genres &&
-                genres.map(genre => {
-                  return (
-                    <option key={genre.id} value={`${genre.name}`}>{genre.name}</option>
-                  )
-                })
-              }
-            </select>
+          <Grid item xs={12} sm={6} >
+            <FormLabel>Tác giả</FormLabel>
+            <FormControl fullWidth>
+              <StyledSelect id="authors" name="author" defaultValue="">
+                {authors && authors.map(author => (
+                  <MenuItem key={author.id} value={author.name}>{author.name}</MenuItem>
+                ))}
+              </StyledSelect>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <input type='text' name='description' placeholder='Mô tả sách' />
-          </Grid>
-          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <input type='number' name='stock' placeholder='Số lượng kho' />
+            <FormLabel>Thể loại</FormLabel>
+            <FormControl fullWidth>
+              <StyledSelect id="genres" name="genre" defaultValue="">
+                {genres && genres.map(genre => (
+                  <MenuItem key={genre.id} value={genre.name}>{genre.name}</MenuItem>
+                ))}
+              </StyledSelect>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <input type='number' name='pages' placeholder='Số trang sách' />
+            <FormLabel>Mô tả sách</FormLabel>
+            <StyledTextField name='description' />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormLabel>Số lượng trong kho</FormLabel>
+            <StyledTextField type='number' name='stock' />
           </Grid>
           <Grid item xs={12} sm={3}>
-            <input type='number' name='price' placeholder='Giá sách' />
+            <FormLabel>Số trang</FormLabel>  
+            <StyledTextField type='number' name='pages' />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <FormLabel>Giá sách</FormLabel>
+            <StyledTextField type='number' name='price' />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormLabel>Nhà xuât bản</FormLabel>
+            <StyledTextField name='publisher' />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <input type='text' name='publisher' placeholder='Nhà xuất bản' />
+            <FormLabel>Ngày xuất bản</FormLabel>
+            <StyledInput type='date' name='publishDate' defaultValue={new Date().toISOString().slice(0, 10)} />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <p>Ngày xuất bản</p>
-            <input type='date' name='publishDate' defaultValue={new Date().toISOString().slice(0, 10)} />
-          </Grid>
-          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            {images.map((img, index) => {
-              return (
-                <ImgStyled key={index} src={img} />
-              )
-            })}
-
+            {images.map((img, index) => (
+              <ImgStyled key={index} src={img} />
+            ))}
             <Box>
               <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
                 Thêm ảnh
@@ -170,7 +173,6 @@ const AddBook = () => {
                 Chỉ cho phép PNG hoặc JPEG. Kích thước tối đa 800K.
               </Typography>
             </Box>
-
           </Grid>
           <Grid item xs={12}>
             <Button variant='contained' sx={{ marginRight: 3.5 }}
@@ -180,7 +182,7 @@ const AddBook = () => {
                 postData(formData)
               }}
             >
-              Thêm
+              Thêm sách
             </Button>
             <Button type='reset' variant='outlined' color='secondary'
               onClick={(e) => { document.getElementById('book-form').reset() }}>

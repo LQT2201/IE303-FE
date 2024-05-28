@@ -1,24 +1,10 @@
-// ** React Imports
 import { forwardRef, useState, useEffect } from 'react'
-
-// ** MUI Imports
-import Grid from '@mui/material/Grid'
-import Radio from '@mui/material/Radio'
-import Select from '@mui/material/Select'
-import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import FormLabel from '@mui/material/FormLabel'
-import InputLabel from '@mui/material/InputLabel'
-import RadioGroup from '@mui/material/RadioGroup'
-import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import FormControlLabel from '@mui/material/FormControlLabel'
+import {
+  Grid, Button, MenuItem, TextField, CardContent, FormControl, Select,
+  Typography, Box, FormLabel
+} from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useRouter } from 'next/router'
-
-import { Typography, Box } from '@mui/material'
 
 const CustomInput = forwardRef((props, ref) => {
   return <TextField inputRef={ref} label='Birth Date' fullWidth {...props} />
@@ -47,6 +33,26 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
     marginTop: theme.spacing(4)
   }
 }))
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  width: '100%',
+  margin: theme.spacing(1, 0),
+}))
+
+const StyledSelect = styled(Select)(({ theme }) => ({
+  width: '100%',
+  margin: theme.spacing(1, 0),
+}))
+
+const StyledInput = styled('input')(({ theme }) => ({
+  width: '100%',
+  padding: theme.spacing(1),
+  margin: theme.spacing(1, 0),
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${theme.palette.divider}`,
+  fontSize: '16px'
+}))
+
 const BASE_URL = 'http://127.0.0.1:8080/api'
 const UpdateBook = () => {
   const router = useRouter()
@@ -54,38 +60,41 @@ const UpdateBook = () => {
   const [images, setImages] = useState([])
   const [authors, setAuthors] = useState([])
   const [genres, setGenres] = useState([])
+
   useEffect(() => {
-    const fetchData = async() => {
-      const fetchBook = fetch(`${BASE_URL}/book/${router.query.id}`).then(resp => resp.json())
-      const fetchGenres = fetch(`${BASE_URL}/genre`).then(resp => resp.json())
-      const fetchAuthors = fetch(`${BASE_URL}/author`).then(resp => resp.json())
-      const [book, genres, authors] = await Promise.all([fetchBook, fetchGenres, fetchAuthors]);
-      setAuthors(authors)
-      setGenres(genres)
-      setBook(book)
+    const fetchData = async () => {
+      try {
+        const [bookData, genresData, authorsData] = await Promise.all([
+          fetch(`${BASE_URL}/book/${router.query.id}`).then(resp => resp.json()),
+          fetch(`${BASE_URL}/genre`).then(resp => resp.json()),
+          fetch(`${BASE_URL}/author`).then(resp => resp.json())
+        ])
+        setAuthors(authorsData)
+        setGenres(genresData)
+        setBook(bookData)
+      } catch (error) {
+        console.error('Failed to fetch data:', error)
+      }
     }
-    if(router.query.id)
-      fetchData().catch(err => console.log(err))
+    if (router.query.id) fetchData()
   }, [router.query.id])
+
   const fileOnChange = async file => {
     const { files } = file.target
-    const readFile = async (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => resolve(reader.result)
-        reader.readAsDataURL(file)
-      })
-    }
     if (files && files.length !== 0) {
-      const imgs = []
-      for (const file of files) {
-        const result = await readFile(file)
-        imgs.push(result)
+      const readFile = file => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(reader.result)
+          reader.readAsDataURL(file)
+        })
       }
+      const imgs = await Promise.all(Array.from(files).map(file => readFile(file)))
       setImages(imgs)
     }
   }
-  const postData = async (form) => {
+
+  const postData = async form => {
     const token = localStorage.getItem('token');
     try {
       const resp = await fetch(`${BASE_URL}/book/${book.id}`, {
@@ -95,76 +104,80 @@ const UpdateBook = () => {
         },
         body: form
       })
-      alert('Sửa thành công')
+      if (resp.ok) {
+        alert('Sửa thành công')
+      } else {
+        alert('Sửa thất bại')
+      }
     } catch (error) {
       alert('Sửa thất bại')
     }
   }
-  if(book == null) {
-    return (<>Đang tải</>)
+
+  if (!book) {
+    return <>Đang tải</>
   }
+
   return (
     <CardContent>
       <form id='book-form' encType='multipart/form-data'>
         <Grid container spacing={7}>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <input type='text' name='title' label='Tên sách' placeholder='Tên sách' defaultValue={book.title}/>
+           <FormLabel>Tên sách</FormLabel>
+            
+            <StyledTextField name='title'  defaultValue={book.title} />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <p>Tác giả</p>
-            <select id="authors" name="author" defaultValue={book.author}>
-              {authors &&
-                authors.map(author => {
-                  return (
-                    <option key={author.id} value={`${author.name}`}>{author.name}</option>
-                  )
-                })
-              }
-            </select>
+            <FormControl fullWidth>
+              <FormLabel>Tác giả</FormLabel>
+              <StyledSelect id="authors" name="author" defaultValue={book.author}>
+                {authors.map(author => (
+                  <MenuItem key={author.id} value={author.name}>{author.name}</MenuItem>
+                ))}
+              </StyledSelect>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <p>Thể loại</p>
-            <select id="genres" name="genre" value={book.genre}>
-              {genres &&
-                genres.map(genre => {
-                  return (
-                    <option key={genre.id} defaultValue={`${genre.name}`}>{genre.name}</option>
-                  )
-                })
-              }
-            </select>
+            <FormControl fullWidth>
+              <FormLabel>Thể loại</FormLabel>
+              <StyledSelect id="genres" name="genre" defaultValue={book.genre}>
+                {genres.map(genre => (
+                  <MenuItem key={genre.id} value={genre.name}>{genre.name}</MenuItem>
+                ))}
+              </StyledSelect>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <p>Mô tả sách</p>
-            <input type='text' name='description' placeholder='Mô tả sách' defaultValue={book.description}/>
-          </Grid>
-          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <p>Số lượng kho</p>
-            <input type='number' name='stock' placeholder='Số lượng kho' defaultValue={book.stock}/>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <p>Số trang sách</p>
-            <input type='number' name='pages' placeholder='Số trang sách' defaultValue={book.pages}/>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <p>Giá sách</p>
-            <input type='number' name='price' placeholder='Giá sách' defaultValue={book.price}/>
-          </Grid>
-          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <p>Nhà xuất bản</p>
-            <input type='text' name='publisher' placeholder='Nhà xuất bản' defaultValue={book.publisher} />
-          </Grid>
-          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            <p>Ngày xuất bản</p>
-            <input type='date' name='publishDate' defaultValue={(new Date(book.publishDate).toISOString().slice(0,10))} />
-          </Grid>
-          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
-            {images.map((img, index) => {
-              return (
-                <ImgStyled key={index} src={img} />
-              )
-            })}
+              <FormLabel>Mô tả sách</FormLabel>
 
+            <StyledTextField name='description'  defaultValue={book.description} />
+          </Grid>
+          <Grid item xs={12} sm={6} >
+            <FormLabel>Số lượng kho</FormLabel>
+
+            <StyledTextField type='number' name='stock'  defaultValue={book.stock} />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <FormLabel>Số trang sách</FormLabel>
+
+            <StyledTextField type='number' name='pages'  defaultValue={book.pages} />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+          <FormLabel>Giá sách</FormLabel>
+
+            <StyledTextField type='number' name='price' defaultValue={book.price} />
+          </Grid>
+          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
+            <StyledTextField name='publisher' label='Nhà xuất bản' placeholder='Nhà xuất bản' defaultValue={book.publisher} />
+          </Grid>
+          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
+            <FormLabel>Ngày xuất bản</FormLabel>
+            <StyledInput type='date' name='publishDate' defaultValue={new Date(book.publishDate).toISOString().slice(0, 10)} />
+          </Grid>
+          <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
+            {images.map((img, index) => (
+              <ImgStyled key={index} src={img} />
+            ))}
             <Box>
               <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
                 Thêm ảnh
@@ -182,7 +195,6 @@ const UpdateBook = () => {
                 Chỉ cho phép PNG hoặc JPEG. Kích thước tối đa 800K.
               </Typography>
             </Box>
-
           </Grid>
           <Grid item xs={12}>
             <Button variant='contained' sx={{ marginRight: 3.5 }}
@@ -192,10 +204,10 @@ const UpdateBook = () => {
                 postData(formData)
               }}
             >
-              Thêm
+              Sửa
             </Button>
             <Button type='reset' variant='outlined' color='secondary'
-              onClick={(e) => { document.getElementById('book-form').reset() }}>
+              onClick={() => { document.getElementById('book-form').reset() }}>
               Reset
             </Button>
           </Grid>

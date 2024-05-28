@@ -10,24 +10,59 @@ import Select from '@mui/material/Select'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
-
+import Book from 'src/components/Book'
+import {useRouter} from 'next/router'
+const BASE_URL ='http://127.0.0.1:8080/api'
+const SORT = {
+  PRICE_ASC: '{"sort": "ASC", "by": "price"}',
+  PRICE_DESC: '{"sort": "DESC", "by": "price"}',
+  DATE_ASC: '{"sort": "ASC", "by": "publishDate"}',
+  DATE_DESC: '{"sort": "DESC", "by": "publishDate"}',
+  TITLE_ASC: '{"sort": "ASC", "by": "title"}',
+  TITLE_DESC: '{"sort": "DESC", "by": "title"}'
+}
 const SearchPage = () => {
   const [value, setValue] = React.useState('')
-  const [price1, setPrice1] = React.useState(0)
-  const [price2, setPrice2] = React.useState(10000000000)
-  const [checked, setChecked] = React.useState(true)
-  const [checked1, setChecked1] = React.useState(true)
-
+  const router = useRouter()
+  const [books, setBooks] = React.useState([])
+  const [genres, setGenres] = React.useState([])
+  const [selectedGenres, setSelectedGenres] = React.useState([])
+  React.useEffect(() => {
+    let {title, genre, sort, by} = router.query
+    let query = '?'
+    if(title) query = `${query}&title=${title}`
+    if(genre) {
+      if(typeof genre === 'string') 
+        genre = [genre]
+      query = `${query}&genre=${genre.join('&genre=')}`
+      setSelectedGenres(genre)
+    }
+    if(sort) query = `${query}&sort=${sort}` 
+    if(by) query = `${query}&by=${by}`
+    console.log(`${BASE_URL}/book${query}`)
+    const fetchData = async () => {
+      const fetchGenres = fetch(`${BASE_URL}/genre`).then(res => res.json())
+      const fetchBooks = fetch(`${BASE_URL}/book${query}`).then(res => res.json())
+      try {
+        const [books, genres] = await Promise.all([fetchBooks, fetchGenres])
+        setBooks(books)
+        setGenres(genres)
+      } catch (error) {
+        console.log(error)
+      }
+    } 
+    fetchData()
+  }, [router.isReady, router.query])
   const handleChange = event => {
-    setValue(event.target.value)
-  }
-
-  const handleCheck = event => {
-    setChecked(event.target.checked)
-  }
-
-  const handleCheck1 = e => {
-    setChecked1(e.target.checked)
+    setValue((prev) => {
+      router.replace({
+        query: {
+          ...router.query,
+          ...JSON.parse(event.target.value)
+        }
+      })
+      return event.target.value
+    })
   }
   return (
     <Box bgcolor='#F0F0F0'>
@@ -41,53 +76,47 @@ const SearchPage = () => {
                 </Typography>
                 <Divider />
               </Box>
-
-              <Box padding={3}>
-                <Typography fontSize={16} fontWeight={700}>
-                  Giá
-                </Typography>
-                <FormGroup sx={{ marginLeft: '5px' }}>
-                  <FormControlLabel
-                    control={<Checkbox checked={checked} onChange={handleCheck} />}
-                    label='0đ - 150,000đ'
-                  />
-                  <FormControlLabel
-                    control={<Checkbox checked={checked1} onChange={handleCheck1} />}
-                    label='150,000đ - 300,000đ'
-                  />
-                </FormGroup>
-                <Divider />
-                <Typography fontSize={13} fontWeight={400}>
-                  Hoặc chọn mức giá phù hợp
-                </Typography>
-                <Box justifyContent='space-between' marginTop={2}>
-                  <TextField
-                    sx={{ width: '100px', height: '10px' }}
-                    id='outlined-controlled'
-                    value={price1}
-                    onChange={event => {
-                      setPrice1(event.target.value)
-                    }}
-                  />
-                  <span> - </span>
-                  <TextField
-                    sx={{ width: '100px', height: '0px' }}
-                    id='outlined-controlled'
-                    value={price2}
-                    onChange={event => {
-                      setPrice2(event.target.value)
-                    }}
-                  />
-                </Box>
-              </Box>
-
               <Box padding={3} marginTop={3}>
                 <Typography fontSize={16} fontWeight={700}>
                   Danh mục
                 </Typography>
                 <FormGroup sx={{ marginLeft: '5px' }}>
-                  <FormControlLabel control={<Checkbox />} label='Danh muc 1' />
-                  <FormControlLabel control={<Checkbox />} label='Danh muc 2' />
+                  {genres.map((genre) => (
+                    <FormControlLabel 
+                      key={genre.id} 
+                      control={<Checkbox />} 
+                      label={genre.name}
+                      name={genre.name}
+                      checked={selectedGenres.includes(genre.name)}
+                      onChange={(e) => {
+                        if(e.target.checked) {
+                          setSelectedGenres((prev) => {
+                            const newGenres = [...prev, e.target.name]
+                            router.replace({
+                              query: {
+                                ...router.query,
+                                genre: newGenres
+                              }
+                            })
+                            return newGenres
+                          })
+                        }
+                        else {
+                          setSelectedGenres((prev) => {
+                            const newGenres = prev.filter((val) => val != e.target.name)
+                            router.replace({
+                              query: {
+                                ...router.query,
+                                genre: newGenres
+                              }
+                            })
+                            return newGenres
+                          })
+                        }
+                        
+                      }}/>
+                  ))}
+                  
                 </FormGroup>
               </Box>
             </Box>
@@ -95,7 +124,7 @@ const SearchPage = () => {
           <Grid md={9} marginTop={4} sx={{ bgcolor: 'white' }}>
             <Box display='flex' justifyContent='space-between' padding={5}>
               <Typography>
-                Kết quả tìm kiếm: <strong> sach hay</strong>
+                Kết quả tìm kiếm
               </Typography>
               <Box display='flex'>
                 <FormControl sx={{ m: 1, minWidth: 120 }} size='small'>
@@ -107,20 +136,22 @@ const SearchPage = () => {
                     label='Sắp xếp theo'
                     onChange={handleChange}
                   >
-                    <MenuItem value=''>
-                      <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={10}>Giá tăng dần</MenuItem>
-                    <MenuItem value={20}>Giá giảm dần</MenuItem>
-                    <MenuItem value={30}>Mới nhất</MenuItem>
+                    <MenuItem value={SORT.PRICE_ASC}>Giá tăng dần</MenuItem>
+                    <MenuItem value={SORT.PRICE_DESC}>Giá giảm dần</MenuItem>
+                    <MenuItem value={SORT.DATE_DESC}>Mới nhất</MenuItem>
+                    <MenuItem value={SORT.DATE_ASC}>Cũ nhất</MenuItem>
+                    <MenuItem value={SORT.TITLE_ASC}>Tên A-Z</MenuItem>
+                    <MenuItem value={SORT.TITLE_DESC}>Tên Z-A</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
             </Box>
             <Grid container>
-              {/* <Grid item md={3} marginBottom={2}>
-                <Book />
-              </Grid> */}
+              {books && books.map((book) =>(
+              <Grid item md={3} marginBottom={2}>
+                <Book book={book}/>
+              </Grid>
+              ))}
             </Grid>
           </Grid>
         </Grid>

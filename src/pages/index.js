@@ -12,12 +12,12 @@ const HomePage = () => {
   React.useEffect(() => {
     const fetchData = async() => {
       const fetchGenres = fetch(`${BASE_URL}/genre`).then(resp => resp.json())
-      const fetchBooks = fetch(`${BASE_URL}/book?size=5&sort=DESC&by=publishDate`).then(resp => resp.json())
+      const fetchBooks = fetch(`${BASE_URL}/book`).then(resp => resp.json())
       const [fetchedGenre, fetchedBook] = await Promise.all([fetchGenres, fetchBooks])
       setGenres(fetchedGenre)
-      setBooks(fetchedBook.content)
+      setBooks(fetchedBook)
     }
-    fetchData()
+    fetchData().catch((error) => {console.log(error)})
   }, [])
   return (
     <Box>

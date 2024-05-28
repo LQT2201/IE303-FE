@@ -19,14 +19,13 @@ const TableGenres = ({rows}) => {
         <TableHead>
           <TableRow>
             <TableCell>Tên thể loại sách</TableCell>
-            <TableCell align='center'>Ảnh thể loại</TableCell>
             <TableCell align='center'>Thao tác</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map(row => (
             <TableRow
-              key={row.name}
+              key={row.id}
               sx={{
                 '&:last-of-type td, &:last-of-type th': {
                   border: 0
@@ -36,9 +35,8 @@ const TableGenres = ({rows}) => {
               <TableCell component='th' scope='row'>
                 {row.name}
               </TableCell>
-              <TableCell align='center'>{formater.format(row.calories)}</TableCell>
               <TableCell align='center'> 
-                <Link href={`/admin/genres/update/${1}`}>
+                <Link href={`/admin/genres/update/${row.name}`}>
                     <IconButton color='red'>
                     <BuildIcon sx={{color:"blue"}}/>
                     </IconButton>

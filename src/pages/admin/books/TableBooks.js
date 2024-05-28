@@ -20,20 +20,17 @@ const TableBooks = ({rows}) => {
           <TableRow>
             <TableCell>Tên sách</TableCell>
             <TableCell align='center'>Giá</TableCell>
-            <TableCell align='center'>Giá sale</TableCell>
             <TableCell align='center'>Thể loại</TableCell>
-
             <TableCell align='center'>Tác giả</TableCell>
             <TableCell align='center'>Trong kho</TableCell>
             <TableCell align='center'>Đã bán</TableCell>
-            <TableCell align='center'>Đánh giá</TableCell>
             <TableCell align='center'>Thao tác</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
+          {rows && rows.map(row => (
             <TableRow
-              key={row.name}
+              key={row.id}
               sx={{
                 '&:last-of-type td, &:last-of-type th': {
                   border: 0
@@ -41,17 +38,15 @@ const TableBooks = ({rows}) => {
               }}
             >
               <TableCell component='th' scope='row'>
-                {row.name}
+                {row.title}
               </TableCell>
-              <TableCell align='center'>{formater.format(row.calories)}</TableCell>
-              <TableCell align='center'>{formater.format(row.calories)}</TableCell>
-              <TableCell align='center'>{row.carbs}</TableCell>
-              <TableCell align='center'>{row.protein}</TableCell>
-              <TableCell align='center'>{row.calories}</TableCell>
-              <TableCell align='center'>{row.fat}</TableCell>
-              <TableCell align='center'>{row.carbs}</TableCell>
+              <TableCell align='center'>{formater.format(row.price)}</TableCell>
+              <TableCell align='center'>{row.genre}</TableCell>
+              <TableCell align='center'>{row.author}</TableCell>
+              <TableCell align='center'>{row.stock}</TableCell>
+              <TableCell align='center'>{row.soldQty}</TableCell>
               <TableCell align='center'> 
-                <Link href={`/admin/books/update/${1}`}>
+                <Link href={`/admin/books/update/${row.id}`}>
                     <IconButton color='red'>
                         <BuildIcon sx={{color:"blue"}}/>
                     </IconButton>

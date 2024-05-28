@@ -25,9 +25,9 @@ const ProductDetail = params => {
           const book = await resp.json()
           setBook(book)
           setIsLoading(false)
-          resp = await fetch(`${BASE_URL}?genre=${book.genre}&size=5`)
+          resp = await fetch(`${BASE_URL}?genre=${book.genre}`)
           const relatedBooks = await resp.json();
-          setRelatedBooks(relatedBooks.content)
+          setRelatedBooks(relatedBooks)
         } catch (error) {
           setError(true)
         }

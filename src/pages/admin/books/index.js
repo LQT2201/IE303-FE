@@ -6,21 +6,16 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 
 
 const Book = () => {
-
-  const createData = (name, calories, fat, carbs, protein) => {
-    return { name, calories, fat, carbs, protein }
-  }
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9)
-  ]
-
+  const [books, setBooks] = React.useState([])
+  React.useEffect(() => {
+    const fetchBook = async() => {
+      const books = await fetch('http://127.0.0.1:8080/api/book').then(resp => resp.json())
+      setBooks(books)
+    }
+    fetchBook().catch(error => console.log(error))
+  }, [])
   return (
     <Grid container>
-        
         <Grid item xs={12}> 
             <Card>
               <CardContent>
@@ -31,7 +26,7 @@ const Book = () => {
                   </Button>
                 </Link>
               </CardContent>
-            <TableBooks rows={rows} />
+            <TableBooks rows={books} />
             </Card>
         </Grid>
     </Grid>

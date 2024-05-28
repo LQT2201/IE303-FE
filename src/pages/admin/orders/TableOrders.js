@@ -13,6 +13,7 @@ import formater from 'src/utils/formatCurrency'
 import { Link } from '@mui/material'
 
 const TableOrders = ({rows}) => {
+  
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -38,15 +39,16 @@ const TableOrders = ({rows}) => {
               }}
             >
               <TableCell component='th' scope='row'>
-                {row.name}
+                {row.id}
               </TableCell>
               <TableCell align='center'>{row.username}</TableCell>
               <TableCell align='center'>{row.orderAt}</TableCell>
-              <TableCell align='center'>{row.orderStatus}</TableCell>
+              <TableCell align='center'>
+                {row.orderStatus}</TableCell>
               <TableCell align='center'>{row.totalPrice}</TableCell>
               <TableCell align='center'>{row.shippingAddress}</TableCell>
               <TableCell align='center'> 
-                <Link href={`/admin/orders/update/${1}`}>
+                <Link href={`/admin/orders/update/${row.id}`}>
                     <IconButton color='red'>
                         <BuildIcon sx={{color:"blue"}}/>
                     </IconButton>

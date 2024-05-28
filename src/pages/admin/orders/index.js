@@ -15,8 +15,6 @@ const Order = () => {
     f().catch(err => console.log(err))
   }, [])
 
-  console.log(orders)
-
   return (
     <Grid container>
         

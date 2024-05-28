@@ -10,7 +10,7 @@ const Order = () => {
   React.useEffect(() => {
     const f = async() => {
       const users = await fetch('http://127.0.0.1:8080/api/user/all').then(r => r.json())
-      setGenres(users)
+      setUser(users)
     }
     f().catch(err => console.log(err))
   }, [])

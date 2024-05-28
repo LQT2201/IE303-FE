@@ -19,11 +19,9 @@ const TableUsers = ({rows}) => {
         <TableHead>
           <TableRow>
             <TableCell>Tên người dùng</TableCell>
-            <TableCell align='center'>Ngày tạo</TableCell>
-            <TableCell align='center'>Vai trò</TableCell>
-            <TableCell align='center'>Email</TableCell>
             <TableCell align='center'>Mật khẩu</TableCell>
-            <TableCell align='center'>Thao tác</TableCell>
+            <TableCell align='center'>Vai trò</TableCell>
+            {/* <TableCell align='center'>Thao tác</TableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -37,13 +35,12 @@ const TableUsers = ({rows}) => {
               }}
             >
               <TableCell component='th' scope='row'>
-                {row.name}
+                {row.username}
               </TableCell>
-              <TableCell align='center'>{formater.format(row.calories)}</TableCell>
-              <TableCell align='center'>{formater.format(row.calories)}</TableCell>
-              <TableCell align='center'>{row.carbs}</TableCell>
-              <TableCell align='center'>{row.protein}</TableCell>
-              <TableCell align='center'> 
+              <TableCell align='center'>{row.password}</TableCell>
+              <TableCell align='center'>{row.role}</TableCell>
+           
+              {/* <TableCell align='center'> 
                 <Link href={`/admin/orders/update/${1}`}>
                     <IconButton color='red'>
                         <BuildIcon sx={{color:"blue"}}/>
@@ -52,7 +49,7 @@ const TableUsers = ({rows}) => {
                 <IconButton>
                   <DeleteForeverIcon sx={{color:"red"}}/>
                 </IconButton>
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>

@@ -44,12 +44,16 @@ const Genre = params => {
       <Grid container sx={{ backgroundColor: '#ffffff' }}>
         <Grid item md={5}>
           <Box>
-            {genre.name}
-            {genre.description}
+            <h2>
+              {genre.name}
+            </h2>
+            <p>
+              {genre.description}
+            </p>
           </Box>
         </Grid>
       </Grid>
-      {books.content.map((book) => (<Book key={book.id} book={book}/>))}
+      {books.map((book) => (<Book key={book.id} book={book}/>))}
     </Container>
   )
 }

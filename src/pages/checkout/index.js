@@ -1,4 +1,6 @@
-import React from 'react'
+import {useState, useEffect} from 'react'
+import { useRouter } from 'next/router';
+import formater from 'src/utils/formatCurrency';
 import DefaultLayout from 'src/layouts/DefaultLayout'
 import {
   Input,
@@ -13,30 +15,56 @@ import {
   CardMedia,
   Button
 } from '@mui/material'
-
+const getToken = () => {
+  return localStorage.getItem('token')
+}
+const BASE_URL = 'http://127.0.0.1:8080/api'
 export default function Checkout() {
-  const books = [
-    {
-      id: 2,
-      bookName: 'Tuổi Thơ Dữ Dội - Tập 1 (Tái Bản 2019)',
-      salePrice: 15000,
-      oldPrice: 20000,
-      rating: 4,
-      quantity: 1,
-      total: 15000,
-      image: 'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'
-    },
-    {
-      id: 1,
-      bookName: 'Tuổi Thơ Dữ Dội - Tập 2 (Tái Bản 2020)',
-      salePrice: 16000,
-      oldPrice: 20000,
-      rating: 5,
-      quantity: 2,
-      total: 32000,
-      image: 'https://cdn0.fahasa.com/media/catalog/product/t/b/tbnhs6_1.jpg'
+  const router = useRouter()
+  const handleClick = async() => {
+    const resp = await fetch(`${BASE_URL}/order/checkout`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: address
+    })
+    if(resp.status == 200) {
+      alert("Đặt hàng thành công")
+      router.push('/')
     }
-  ]
+  }
+  const [token, setToken] = useState('')
+  const [cart, setCart] = useState([])
+  const [address, setAddress] = useState('')
+  
+  const updateCart = async (newCart) => {
+    await fetch(`${BASE_URL}/user/cart`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newCart)
+    })
+  }
+  useEffect(() => {
+    setToken(getToken())
+    const fetchUser = async () => {
+      try {
+        const cart = await fetch(`${BASE_URL}/user/cart`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }).then(res => res.json())
+        setCart(cart)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchUser()
+  }, [token])
   return (
     <Container maxWidth='lg'>
       <Grid
@@ -57,79 +85,16 @@ export default function Checkout() {
         </Box>
         <Box display={'flex'} alignItems={'center'}>
           <Grid item md={3}>
-            <Typography> Họ và tên người nhận: </Typography>
-          </Grid>
-          <Grid item md={9} alignItems={'center'}>
-            <Input type='text' placeholder='Họ và tên người nhận' fullWidth></Input>
-          </Grid>
-        </Box>
-        <Box display={'flex'} alignItems={'center'}>
-          <Grid item md={3}>
-            <Typography> Email: </Typography>
-          </Grid>
-          <Grid item md={9}>
-            <Input type='email' placeholder='Email' fullWidth></Input>
-          </Grid>
-        </Box>
-        <Box display={'flex'} alignItems={'center'}>
-          <Grid item md={3}>
-            <Typography> Số điện thoại: </Typography>
-          </Grid>
-          <Grid item md={9}>
-            <Input type='number' placeholder='Số điện thoại' fullWidth></Input>
-          </Grid>
-        </Box>
-        <Box display={'flex'} alignItems={'center'}>
-          <Grid item md={3}>
-            <Typography> Tỉnh/Thành phố: </Typography>
-          </Grid>
-          <Grid item md={9}>
-            <FormControl sx={{ m: 1, minWidth: 120 }} size='small' fullWidth>
-              <InputLabel id='demo-simple-select-label'>Tỉnh/TP</InputLabel>
-              <Select labelId='demo-simple-select-label' id='demo-simple-select' label='Age'>
-                <MenuItem>Ten</MenuItem>
-                <MenuItem>Twenty</MenuItem>
-                <MenuItem>Thirty</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Box>
-        <Box display={'flex'} alignItems={'center'}>
-          <Grid item md={3}>
-            <Typography> Quận/Huyện: </Typography>
-          </Grid>
-          <Grid item md={9}>
-            <FormControl sx={{ m: 1, minWidth: 120 }} size='small' fullWidth>
-              <InputLabel id='demo-simple-select-label'>Quận/Huyện</InputLabel>
-              <Select labelId='demo-simple-select-label' id='demo-simple-select' label='Age'>
-                <MenuItem>Ten</MenuItem>
-                <MenuItem>Twenty</MenuItem>
-                <MenuItem>Thirty</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Box>
-        <Box display={'flex'} alignItems={'center'}>
-          <Grid item md={3}>
-            <Typography> Phường/Xã: </Typography>
-          </Grid>
-          <Grid item md={9}>
-            <FormControl sx={{ m: 1, minWidth: 120 }} size='small' fullWidth>
-              <InputLabel id='demo-simple-select-label'>Phường/Xã</InputLabel>
-              <Select labelId='demo-simple-select-label' id='demo-simple-select' label='Age'>
-                <MenuItem>Ten</MenuItem>
-                <MenuItem>Twenty</MenuItem>
-                <MenuItem>Thirty</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Box>
-        <Box display={'flex'} alignItems={'center'}>
-          <Grid item md={3}>
             <Typography> Địa chỉ: </Typography>
           </Grid>
           <Grid item md={9}>
-            <Input type='text' placeholder='Địa chỉ' fullWidth></Input>
+            <Input 
+              type='text' 
+              placeholder='Địa chỉ' 
+              fullWidth 
+              onChange={(e) => setAddress(e.target.value)}
+            >
+            </Input>
           </Grid>
         </Box>
       </Grid>
@@ -150,36 +115,54 @@ export default function Checkout() {
           <Typography sx={{ fontSize: 18, fontWeight: 600 }}>Kiểm tra lại đơn hàng</Typography>
         </Box>
         <Box>
-          {books.map(book => (
-            <Box display={'flex'}>
-              <Grid item md={2}>
-                <CardMedia component='img' src={book.image} />
-              </Grid>
-              <Grid item md={5}>
-                <Typography lineHeight={2.5} fontSize={16}>
-                  {book.bookName}
-                </Typography>
-              </Grid>
-              <Grid item md={2}>
-                <Typography lineHeight={2.5} fontSize={16}>
-                  {book.salePrice}
-                </Typography>
-                <Typography lineHeight={2.5} color='#888888' fontSize={16} sx={{ textDecoration: 'line-through' }}>
-                  {book.oldPrice}
-                </Typography>
-              </Grid>
-              <Grid item md={1}>
-                <Typography lineHeight={2.5} fontSize={16}>
-                  {book.quantity}
-                </Typography>
-              </Grid>
-              <Grid item md={2}>
-                <Typography lineHeight={2.5} color='#C92127' fontSize={16} fontWeight={700}>
-                  {book.total}
-                </Typography>
-              </Grid>
-            </Box>
-          ))}
+        {cart.map((item, i) => {
+            return (
+              <Box key={i} marginTop={3} marginRight={4} bgcolor="white" borderRadius={1}>
+                <Box display="flex" padding={4}>
+                  <Box flexBasis="16%">
+                    <Box
+                      overflow="hidden"
+                      width="120px"
+                      height="120px"
+                      component="img"
+                      src={item.image}
+                    />
+                  </Box >
+                  <Box display="flex" flexBasis="68%">
+                    <Box display="flex" flexBasis="60%" flexDirection="column" justifyContent="space-between">
+                      <Typography fontSize={14}>
+                        {item.title}
+                      </Typography>
+                      <Typography fontWeight={700}>
+                        {formater.format(item.price)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box flexBasis="28%" display="flex" alignItems="center" justifyContent="space-between">
+                    <input id={`item-${item.itemId}`} type='number' defaultValue={item.quantity} name='quantity'
+                      onChange={async (e) => {
+                        const id = e.target.id.split('-')[1]
+                        const newCart = cart.map(v => {
+                          if (v.itemId != id)
+                            return v
+                          return {
+                            ...v,
+                            quantity: e.target.value
+                          }
+                        })
+                        await updateCart(newCart)
+                        setCart(newCart)
+                      }} />
+                    <button id={item.itemId} type='submit' onClick={async (e) => {
+                      const newCart = cart.filter(v => v.itemId != e.target.id)
+                      await updateCart(newCart)
+                      setCart(newCart)
+                    }}>Loại bỏ</button>
+                  </Box>
+                </Box>
+              </Box>
+            )
+          })}
         </Box>
       </Grid>
 
@@ -208,6 +191,7 @@ export default function Checkout() {
               background: '#f55207'
             }
           }}
+          onClick={handleClick}
         >
           Xác nhận đặt hàng
         </Button>

@@ -21,6 +21,9 @@ const Book = ({ book }) => {
             src={book.images[0]}
           />
         </Link>
+        <Typography marginLeft={3} fontSize={10} color="#7A7E7F">
+          Đã bán <strong> {book.soldQty} </strong>
+        </Typography>
       </Box>
 
       <CardContent sx={{ paddingTop: "10px" }}>
@@ -44,12 +47,7 @@ const Book = ({ book }) => {
           <Typography color="#C92127" fontWeight={600} fontSize={16}>
             {formater.format(book.price)}
           </Typography>
-        </Box>
-        <Box display="flex">
-          <Rating name="read-only" value={book.rating} readOnly size='small' sx={{ borderRight: "2px solid #7A7E7F" }} />
-          <Typography marginLeft={3} fontSize={10} color="#7A7E7F">
-            Đã bán <strong> {book.soldQty} </strong>
-          </Typography>
+
         </Box>
       </CardContent>
     </Card>

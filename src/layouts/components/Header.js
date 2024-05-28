@@ -8,7 +8,8 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import { Container, Grid, TextField } from '@mui/material';
+import { Container, Grid, Link, TextField } from '@mui/material';
+import { SelectSearch } from 'mdi-material-ui';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -57,43 +58,57 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 export default function SearchAppBar() {
+
+  const [search,setSearch] = React.useState("");
+
   return (
     <AppBar sx={{background:"#ffffff"}}>
       <Container maxWidth="lg">
         <Toolbar>
           <Grid container alignItems="center">
             <Grid item md={3}>
-              <Box width="220px">
-                <Box 
-                  component="img"
-                  width="220px"
-                  src="https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/fahasa-logo.png"
-                />
-              </Box>
+              <Link href="/">
+                <Box width="220px">
+                  <Box 
+                    component="img"
+                    width="220px"
+                    src="https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/fahasa-logo.png"
+                  />
+                </Box>
+              </Link>
             </Grid>
             <Grid item md={6}>
               <Search>
                 <StyledInputBase
                   placeholder="Tìm kiếm ..."
-                  inputProps={{ 'aria-label': 'search' }}
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
                 />
-                <SearchIconWrapper>
-                  <IconButton color='white'>
-                    <SearchIcon sx={{color:"white"}}/>
-                  </IconButton>
-                </SearchIconWrapper>
+
+                {
+                  search ? 
+                  <SearchIconWrapper>
+                    <Link href={`/search/${search}`}> 
+                      <IconButton color='white'>
+                        <SearchIcon sx={{color:"white"}}/>
+                      </IconButton>
+                    </Link>
+                  </SearchIconWrapper>
+                  : 
+                  <SearchIconWrapper>
+                    <IconButton color='white'>
+                      <SearchIcon sx={{color:"white"}}/>
+                    </IconButton>
+                  </SearchIconWrapper>
+                }
+
+                
              </Search>
             </Grid>
             <Grid item md={1}/>
             <Grid item md={2} textAlign="center" flexDirection="row" display="flex" justifyContent="space-between">
-              <Box flexDirection="column" display="flex">
-                <IconButton sx={{padding:'0px'}}>
-                  <NotificationsOutlinedIcon/>
-                </IconButton>
-                <Typography component="span" sx={{fontSize:"13px", lineHeight:"18px", color:"#7A7E7F"}}>
-                  Thông báo
-                </Typography>
-              </Box>
+              
+              <Link href="/cart">
               <Box flexDirection="column" display="flex">
                 <IconButton sx={{padding:'0px'}}>
                   <NotificationsOutlinedIcon/>
@@ -102,6 +117,8 @@ export default function SearchAppBar() {
                   Giỏ hàng
                 </Typography>
               </Box>
+              </Link>
+              <Link href="/profile">
               <Box flexDirection="column" display="flex">
                 <IconButton sx={{padding:'0px'}}>
                   <NotificationsOutlinedIcon/>
@@ -110,6 +127,7 @@ export default function SearchAppBar() {
                   Tài khoản
                 </Typography>
               </Box>
+              </Link>
             </Grid>
           </Grid>
         </Toolbar>

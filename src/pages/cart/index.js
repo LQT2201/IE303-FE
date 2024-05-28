@@ -1,4 +1,4 @@
-import { Container, Grid, Stack, Box, Typography, Divider, LinearProgress, Button  } from '@mui/material'
+import { Container, Grid, Stack, Box, Typography, Divider, LinearProgress, Button, Link  } from '@mui/material'
 import React from 'react'
 import DefaultLayout from 'src/layouts/DefaultLayout'
 import DiscountIcon from '@mui/icons-material/Discount';
@@ -155,11 +155,13 @@ const CartPage = () => {
             
 
                 <Divider/>
-                <Box textAlign="center" width="100%" margin="0 auto" display="flex">
+               <Link href="/checkout">
+               <Box textAlign="center" width="100%" margin="0 auto" display="flex">
                   <Button sx={{margin:"0 auto", bgcolor:"#CC0000", color:"white", width:"100%", fontSize:"20px", fontWeight:700}}>
                     Thanh Toán
                   </Button>
                 </Box>
+               </Link>
                 
               </Box>
             </Grid>

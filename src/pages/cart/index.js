@@ -24,8 +24,9 @@ const CartPage = () => {
   }
   useEffect(() => {
     if(typeof window !== 'undefined') {
-      setToken(getToken())
-      if(token == null)
+      const tok = getToken()
+      setToken(tok)
+      if(tok == null)
         router.push('/pages/login')
       const fetchUser = async () => {
         try {

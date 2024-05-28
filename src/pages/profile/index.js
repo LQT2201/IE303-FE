@@ -48,6 +48,8 @@ const Profile = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const tok = localStorage.getItem('token')
+      if(tok == null)
+        router.push('/pages/login')
       setToken(tok)
       const fetchUser = async () => {
         try {
@@ -99,6 +101,12 @@ const Profile = () => {
                   </Button>
                   <Button type='reset' variant='outlined' color='secondary'>
                     Đặt lại
+                  </Button>
+                  <Button variant='contained' sx={{ marginRight: 3.5 }} onClick={() => {
+                    localStorage.removeItem('token')
+                    router.push('/')
+                  }}>
+                    Đăng xuất
                   </Button>
                 </Grid>
               </Grid>

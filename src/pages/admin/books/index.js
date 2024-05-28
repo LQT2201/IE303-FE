@@ -13,7 +13,7 @@ const Book = () => {
       setBooks(books)
     }
     fetchBook().catch(error => console.log(error))
-  }, [books])
+  }, [])
   return (
     <Grid container>
         <Grid item xs={12}> 

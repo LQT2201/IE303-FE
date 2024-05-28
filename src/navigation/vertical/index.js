@@ -9,7 +9,7 @@ import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
-import { Book } from 'mdi-material-ui'
+import { Book, NaturePeople } from 'mdi-material-ui'
 import { Category } from '@mui/icons-material'
 
 const navigation = () => {
@@ -28,6 +28,11 @@ const navigation = () => {
       title:"Thể loại",
       icon:Category,
       path:"/admin/genres"
+    },
+    {
+      title:"Tác giả",
+      icon: NaturePeople,
+      path:"/admin/authors"
     },
     {
       title:"Đơn hàng",

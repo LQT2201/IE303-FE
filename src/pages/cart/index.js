@@ -1,4 +1,5 @@
 import { Container, Grid, Box, Typography, Divider, Button, Link } from '@mui/material'
+import router from 'next/router';
 import { useEffect, useState } from 'react'
 import DefaultLayout from 'src/layouts/DefaultLayout'
 import formater from 'src/utils/formatCurrency';
@@ -22,22 +23,28 @@ const CartPage = () => {
     })
   }
   useEffect(() => {
-    setToken(getToken())
-    const fetchUser = async () => {
-      try {
-        const cart = await fetch(`${BASE_URL}/user/cart`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }).then(res => res.json())
-        setCart(cart)
-      } catch (error) {
-        console.log(error)
+    if(typeof window !== 'undefined') {
+      setToken(getToken())
+      if(token == null)
+        router.push('/pages/login')
+      const fetchUser = async () => {
+        try {
+          const cart = await fetch(`${BASE_URL}/user/cart`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }).then(res => res.json())
+          setCart(cart)
+        } catch (error) {
+          console.log(error)
+        }
       }
+      fetchUser()
     }
-    fetchUser()
-  }, [token])
+      
+    
+  }, [])
   return (
     <Container sx={{ marginTop: "80px" }}>
       <Grid container>

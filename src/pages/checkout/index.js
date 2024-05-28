@@ -49,22 +49,24 @@ export default function Checkout() {
     })
   }
   useEffect(() => {
-    setToken(getToken())
-    const fetchUser = async () => {
-      try {
-        const cart = await fetch(`${BASE_URL}/user/cart`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }).then(res => res.json())
-        setCart(cart)
-      } catch (error) {
-        console.log(error)
+    if(typeof window !== 'undefined'){
+      setToken(getToken())
+      const fetchUser = async () => {
+        try {
+          const cart = await fetch(`${BASE_URL}/user/cart`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }).then(res => res.json())
+          setCart(cart)
+        } catch (error) {
+          console.log(error)
+        }
       }
+      fetchUser()
     }
-    fetchUser()
-  }, [token])
+  }, [])
   return (
     <Container maxWidth='lg'>
       <Grid

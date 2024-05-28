@@ -58,12 +58,14 @@ const BASE_URL = 'http://127.0.0.1:8080/api'
 const UpdateAuthor = () => {
   const [images, setImages] = useState([])
   const [author, setAuthor] = useState({ name: '', information: '' })
+  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const authorsData = await fetch(`${BASE_URL}/author`).then(resp => resp.json())
-        setAuthor(authorsData[0])
+        const authorsData = await fetch(`${BASE_URL}/author/${router.query.id}`).then(resp => resp.json())
+        setAuthor(authorsData)
+        // console.log(authorsData)
       } catch (error) {
         console.error('Failed to fetch data:', error)
       }
@@ -89,26 +91,28 @@ const UpdateAuthor = () => {
   const postData = async form => {
     const token = localStorage.getItem('token');
     try {
-      const resp = await fetch(`${BASE_URL}/author`, {
+      const resp = await fetch(`${BASE_URL}/author/${author.id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`
         },
         body: form
       })
+
+      console.log(router.query.id)
       if (resp.ok) {
         alert('Sửa thành công')
       } else {
-        alert('Sửa thất bại')
+        alert('Sửa thất bại  1')
       }
     } catch (error) {
-      alert('Sửa thất bại')
+      alert('Sửa thất bại 2')
     }
   }
 
   return (
     <CardContent>
-      <form id='book-form' encType='multipart/form-data'>
+      <form id='author-form' encType='multipart/form-data'>
         <Grid container spacing={7}>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
            <FormLabel>Tên tác giả</FormLabel>
@@ -117,7 +121,7 @@ const UpdateAuthor = () => {
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
             <FormControl fullWidth>
               <FormLabel>Thông tin</FormLabel>
-              <StyledTextField name='information' value={author.information} onChange={(e) => setAuthor({ ...author, information: e.target.value })} />
+              <StyledTextField name='information' id='information' value={author.information} onChange={(e) => setAuthor({ ...author, information: e.target.value })} />
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginTop: 4.8 }}>
@@ -145,7 +149,7 @@ const UpdateAuthor = () => {
           <Grid item xs={12}>
             <Button variant='contained' sx={{ marginRight: 3.5 }}
               onClick={() => {
-                const form = document.getElementById('book-form')
+                const form = document.getElementById('author-form')
                 const formData = new FormData(form)
                 postData(formData)
               }}
@@ -153,7 +157,7 @@ const UpdateAuthor = () => {
               Sửa
             </Button>
             <Button type='reset' variant='outlined' color='secondary'
-              onClick={() => { document.getElementById('book-form').reset() }}>
+              onClick={() => { document.getElementById('author-form').reset() }}>
               Reset 
             </Button>
           </Grid>

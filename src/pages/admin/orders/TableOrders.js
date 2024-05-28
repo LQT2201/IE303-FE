@@ -23,6 +23,7 @@ const TableOrders = ({rows}) => {
             <TableCell align='center'>Ngày tạo</TableCell>
             <TableCell align='center'>Trạng thái</TableCell>
             <TableCell align='center'>Tổng tiền</TableCell>
+            <TableCell align='center'>Địa chỉ</TableCell>
             <TableCell align='center'>Thao tác</TableCell>
           </TableRow>
         </TableHead>
@@ -39,10 +40,11 @@ const TableOrders = ({rows}) => {
               <TableCell component='th' scope='row'>
                 {row.name}
               </TableCell>
-              <TableCell align='center'>{formater.format(row.calories)}</TableCell>
-              <TableCell align='center'>{formater.format(row.calories)}</TableCell>
-              <TableCell align='center'>{row.carbs}</TableCell>
-              <TableCell align='center'>{row.protein}</TableCell>
+              <TableCell align='center'>{row.username}</TableCell>
+              <TableCell align='center'>{row.orderAt}</TableCell>
+              <TableCell align='center'>{row.orderStatus}</TableCell>
+              <TableCell align='center'>{row.totalPrice}</TableCell>
+              <TableCell align='center'>{row.shippingAddress}</TableCell>
               <TableCell align='center'> 
                 <Link href={`/admin/orders/update/${1}`}>
                     <IconButton color='red'>

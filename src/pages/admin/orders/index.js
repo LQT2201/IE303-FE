@@ -6,13 +6,16 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 
 
 const Order = () => {
-  const createData = (name, calories) => {
-    return { name, calories }
-  }
-  const rows = [
-    createData('Frozen yoghurt', 159),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  ]
+  const [orders, setOrders] = React.useState([])
+  React.useEffect(() => {
+    const f = async() => {
+      const orders = await fetch('http://127.0.0.1:8080/api/order/all').then(r => r.json())
+      setOrders(orders)
+    }
+    f().catch(err => console.log(err))
+  }, [])
+
+  console.log(orders)
 
   return (
     <Grid container>
@@ -22,7 +25,7 @@ const Order = () => {
               <CardContent> 
                 
               </CardContent>
-              <TableOrders rows={rows} />
+              <TableOrders rows={orders} />
             </Card>
         </Grid>
     </Grid> 

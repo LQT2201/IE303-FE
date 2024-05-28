@@ -10,6 +10,7 @@ import DefaultLayout from 'src/layouts/DefaultLayout'
 import formater from 'src/utils/formatCurrency'
 import { useRouter } from 'next/router'
 import Link from 'next/link';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
 const BASE_URL = 'http://127.0.0.1:8080/api'
 const getToken = () => {
   return localStorage.getItem('token')
@@ -20,6 +21,8 @@ const ProductDetail = params => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
   const [relatedBooks, setRelatedBooks] = useState(null)
+  const [recommend, setRecommend] = useState(null);
+
   const updateCart = (token, newCart) => {
     return fetch(`${BASE_URL}/user/cart`, {
       method: "POST",
@@ -30,6 +33,7 @@ const ProductDetail = params => {
       body: JSON.stringify(newCart)
     })
   }
+
   const getCart = (token) => {
     return fetch(`${BASE_URL}/user/cart`, {
       method: "GET",
@@ -72,6 +76,7 @@ const ProductDetail = params => {
       console.log(error)
     }
   }
+
   const addToCart = async() => {
     const token = getToken()
     if(!token)
@@ -84,7 +89,30 @@ const ProductDetail = params => {
       console.log(error)
     }
   }
+
   useEffect(() => {
+    const recommendBooks = async (targetBook, numberOfRecommendations) => {
+      const response = await fetch(`${BASE_URL}/recommend`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(targetBook),
+        params: {
+          numberOfRecommendations
+        }
+      });
+    
+      if (!response.ok) {
+        throw new Error('Failed to fetch recommendations');
+      }
+    
+      const data = await response.json();
+      return data;
+    };
+
+   
+
     const fetchBook = async () => {
       if (router.query.id) {
         try {
@@ -101,6 +129,8 @@ const ProductDetail = params => {
     }
     fetchBook()
   }, [router.query.id])
+  
+
   if (error)
     return (
       <p>Không tìm thấy sản phẩm</p>
@@ -111,11 +141,24 @@ const ProductDetail = params => {
     )
   return (
     <Container maxWidth='lg'>
+      <Breadcrumbs aria-label="breadcrumb" sx={{marginY:"10px"}}>
+        <Link underline="hover" color="inherit" href="/">
+          Trang chủ
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          href="/search"
+        >
+          Sản phẩm
+        </Link>
+        <Typography color="text.primary">{book.title}</Typography>
+      </Breadcrumbs>
       <Grid container sx={{ backgroundColor: '#ffffff' }}>
-        <Grid item md={5}>
+        <Grid item md={5} padding={5}>
           <Box>
-            <Box>
-              <img src={book.images[0]}/>
+            <Box sx={{width:"400px", height:"400px"}} marginBottom={5}>
+              <img width={400} height={400} src={book.images[0]}/>
             </Box>
             <Box>
               <Carousel responsive={responsive}>
@@ -211,6 +254,21 @@ const ProductDetail = params => {
             </Grid>
           ))}
         </Grid>
+        
+      </Grid>
+      <Grid container sx={{ backgroundColor: '#ffffff', marginTop: 10 }}>
+        <Typography fontSize={20} fontWeight={600} padding={5}>
+          Gợi ý sản phẩm
+        </Typography>
+
+        <Grid container marginTop={5}>
+          
+            <Grid item md={2.4} key={book.id}>
+              <Book book={book} />
+            </Grid>
+        
+        </Grid>
+        
       </Grid>
     </Container>
   )

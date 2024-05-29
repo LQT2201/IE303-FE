@@ -11,8 +11,30 @@ import BuildIcon from '@mui/icons-material/Build';
 import { Box, IconButton } from '@mui/material'
 import formater from 'src/utils/formatCurrency'
 import { Link } from '@mui/material'
+import { useRouter } from 'next/router'
+import Swal from 'sweetalert2'
 
-const TableAuthors = ({rows}) => {
+const TableAuthors = ({rows, onDelete}) => {
+  const handleDelete = async (id) => {
+  
+
+    try {
+      const response = await fetch(`${BASE_URL}/author/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        Swal.fire("Đã xóa!", "", "success");
+        router.reload()
+      } else {
+        Swal.fire("Lỗi. Xóa ko thành!", "", "error");
+      }
+    } catch (error) {
+     
+      Swal.fire("Lỗi xay ra trong quá trình xóa!", "", "error");
+    }
+  
+};
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -49,7 +71,7 @@ const TableAuthors = ({rows}) => {
                         <BuildIcon sx={{color:"blue"}}/>
                     </IconButton>
                 </Link>
-                <IconButton>
+                <IconButton onClick={() => handleDelete(row.id)}>
                   <DeleteForeverIcon sx={{color:"red"}}/>
                 </IconButton>
               </TableCell>

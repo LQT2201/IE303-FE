@@ -5,6 +5,7 @@ import {
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useRouter } from 'next/router'
+import Swal from 'sweetalert2'
 
 const CustomInput = forwardRef((props, ref) => {
   return <TextField inputRef={ref} label='Birth Date' fullWidth {...props} />
@@ -54,6 +55,7 @@ const StyledInput = styled('input')(({ theme }) => ({
 }))
 
 const BASE_URL = 'http://127.0.0.1:8080/api'
+
 const UpdateBook = () => {
   const router = useRouter()
   const [book, setBook] = useState(null)
@@ -105,9 +107,10 @@ const UpdateBook = () => {
         body: form
       })
       if (resp.ok) {
-        alert('Sửa thành công')
+        Swal.fire("Sửa thành công", "", "success");
+        router.push('/admin/books')
       } else {
-        alert('Sửa thất bại')
+        Swal.fire("Sửa thất bại", "", "error");
       }
     } catch (error) {
       alert('Sửa thất bại')

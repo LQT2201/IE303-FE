@@ -5,8 +5,7 @@ import {
   FormControlLabel, Typography, Box
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import DatePicker from 'react-datepicker'
-import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import { useRouter } from 'next/router'
 
 const CustomInput = forwardRef((props, ref) => {
   return <TextField inputRef={ref} label='Birth Date' fullWidth {...props} />
@@ -57,6 +56,7 @@ const StyledInput = styled('input')(({ theme }) => ({
 
 const BASE_URL = 'http://127.0.0.1:8080/api'
 const AddBook = () => {
+  const router = useRouter();
   const [images, setImages] = useState([])
   const [authors, setAuthors] = useState([])
   const [genres, setGenres] = useState([])
@@ -95,9 +95,10 @@ const AddBook = () => {
         },
         body: form
       })
-      alert('Thêm thành công')
+      Swal.fire("Thêm thành công", "", "success");
+      router.push('/admin/books')
     } catch (error) {
-      alert('Thêm thất bại')
+      Swal.fire("Thất bại", "", "error");
     }
   }
   return (

@@ -4,23 +4,11 @@ import { useState, useEffect } from 'react'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
-import FormLabel from '@mui/material/FormLabel'
-import InputLabel from '@mui/material/InputLabel'
-import RadioGroup from '@mui/material/RadioGroup'
 import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import { styled } from '@mui/material/styles'
-import { router, useRouter } from 'next/router'
-// ** Third Party Imports
-import DatePicker from 'react-datepicker'
-
-// ** Styled Components
-import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import { Typography, Box } from '@mui/material'
+import {  useRouter } from 'next/router'
+import Swal from 'sweetalert2'
 
 
 const ImgStyled = styled('img')(({ theme }) => ({
@@ -79,6 +67,9 @@ const UpdateGenre = () => {
         description: genre.description
       })
     })
+
+    Swal.fire("Sửa thành công", "", "success");
+    router.push('/admin/genres')
   }
   return (
     <CardContent>

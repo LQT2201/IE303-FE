@@ -17,12 +17,8 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { styled } from '@mui/material/styles'
 
-// ** Third Party Imports
-import DatePicker from 'react-datepicker'
-
-// ** Styled Components
-import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import { Typography, Box } from '@mui/material'
+import Swal from 'sweetalert2'
+import { useRouter } from 'next/router'
 
 const CustomInput = forwardRef((props, ref) => {
   return <TextField inputRef={ref} label='Birth Date' fullWidth {...props} />
@@ -53,6 +49,7 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
 }))
 
 const AddGenre = () => {
+  const router = useRouter()
   const [genre, setGenre] = useState({
     name: '',
     description: '',
@@ -76,7 +73,8 @@ const AddGenre = () => {
         },
         body: JSON.stringify(genre)
       })
-      alert('Thêm thành công')
+      Swal.fire("Thêm thành công", "", "success");
+      router.push('/admin/genres')
     } catch (error) {
       alert(error)
     }

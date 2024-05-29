@@ -18,6 +18,7 @@ import DefaultLayout from 'src/layouts/DefaultLayout'
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
 import formater from 'src/utils/formatCurrency'
+import { Card, Container, Typography } from '@mui/material';
 
 const BASE_URL = 'http://127.0.0.1:8080/api'
 const ProfileOrder = () => {
@@ -49,21 +50,26 @@ const ProfileOrder = () => {
   if (isLoading)
     return <p>Đang tải</p>
   return (
-    <Grid container>
-      <Grid item xs={12} sm={4}>
+    <Container>
+      <Grid container marginTop={30}>
+      <Grid item xs={12} sm={3} bgcolor="white" borderRight={"red"}>
         <Link href='/profile'>
-          <Box>
+          <Box sx={{cursor:"pointer"}} padding={5}>
+            <Typography >
             Tài khoản
+            </Typography>
           </Box>
         </Link>
         <Link href='/profile/order'>
-          <Box>
+          <Box sx={{cursor:"pointer"}} padding={5}>
             Đơn hàng
           </Box>
         </Link>
       </Grid>
+      <Grid item sm={1}></Grid>
       <Grid item xs={12} sm={8}>
       <TableContainer >
+      <Card>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
         <TableHead>
           <TableRow>
@@ -93,9 +99,11 @@ const ProfileOrder = () => {
           ))}
         </TableBody>
       </Table>
+      </Card>
     </TableContainer>
       </Grid>
     </Grid>
+    </Container>
   )
 }
 ProfileOrder.getLayout = page => <DefaultLayout> {page} </DefaultLayout>

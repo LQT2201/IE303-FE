@@ -20,6 +20,7 @@ import DefaultLayout from 'src/layouts/DefaultLayout'
 import 'react-datepicker/dist/react-datepicker.css'
 import router from 'next/router';
 import Link from 'next/link'
+import { Container, Typography } from '@mui/material'
 
 const BASE_URL = 'http://127.0.0.1:8080/api'
 const Profile = () => {
@@ -71,15 +72,18 @@ const Profile = () => {
   if (isLoading)
     return <p>Đang tải</p>
   return (
-    <Grid container>
-      <Grid item xs={12} sm={4}>
+    <Container sx={{marginTop:5}}>
+      <Grid container marginTop={30}>
+      <Grid item xs={12} sm={4} bgcolor="white">
         <Link href='/profile'>
-          <Box>
+          <Box sx={{cursor:"pointer"}} padding={5}>
+            <Typography >
             Tài khoản
+            </Typography>
           </Box>
         </Link>
         <Link href='/profile/order'>
-          <Box>
+          <Box sx={{cursor:"pointer"}} padding={5}>
             Đơn hàng
           </Box>
         </Link>
@@ -102,7 +106,7 @@ const Profile = () => {
                   <Button type='reset' variant='outlined' color='secondary'>
                     Đặt lại
                   </Button>
-                  <Button variant='contained' sx={{ marginRight: 3.5 }} onClick={() => {
+                  <Button variant='contained' sx={{ marginLeft: 4 }} onClick={() => {
                     localStorage.removeItem('token')
                     router.push('/')
                   }}>
@@ -115,6 +119,7 @@ const Profile = () => {
         </Card>
       </Grid>
     </Grid>
+    </Container>
   )
 }
 Profile.getLayout = page => <DefaultLayout> {page} </DefaultLayout>

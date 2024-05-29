@@ -1,18 +1,46 @@
-// ** MUI Imports
-import Paper from '@mui/material/Paper'
-import Table from '@mui/material/Table'
-import TableRow from '@mui/material/TableRow'
-import TableHead from '@mui/material/TableHead'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
+import React from 'react';
+import { useRouter } from 'next/router';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableRow from '@mui/material/TableRow';
+import TableHead from '@mui/material/TableHead';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import BuildIcon from '@mui/icons-material/Build';
-import { IconButton } from '@mui/material'
-import formater from 'src/utils/formatCurrency'
-import { Link } from '@mui/material'
+import { IconButton } from '@mui/material';
+import formater from 'src/utils/formatCurrency';
+import { Link } from '@mui/material';
+import Swal from 'sweetalert2';
 
-const TableBooks = ({rows}) => {
+const BASE_URL = 'http://127.0.0.1:8080/api';
+
+const TableBooks = ({ rows, onDelete }) => {
+  const router = useRouter();
+
+  const handleDelete = async (id) => {
+    
+
+      try {
+        const response = await fetch(`${BASE_URL}/book/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          Swal.fire("Đã xóa!", "", "success");
+          router.reload()
+
+        } else {
+          Swal.fire("Lỗi!", "", "error");
+        }
+      } catch (error) {
+        console.error('Error deleting book:', error);
+        Swal.fire("Lỗi xay ra trong quá trình xóa!", "", "error");
+      }
+    
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -45,14 +73,14 @@ const TableBooks = ({rows}) => {
               <TableCell align='center'>{row.author}</TableCell>
               <TableCell align='center'>{row.stock}</TableCell>
               <TableCell align='center'>{row.soldQty}</TableCell>
-              <TableCell align='center'> 
+              <TableCell align='center'>
                 <Link href={`/admin/books/update/${row.id}`}>
-                    <IconButton color='red'>
-                        <BuildIcon sx={{color:"blue"}}/>
-                    </IconButton>
+                  <IconButton color='primary'>
+                    <BuildIcon sx={{ color: "blue" }} />
+                  </IconButton>
                 </Link>
-                <IconButton>
-                  <DeleteForeverIcon sx={{color:"red"}}/>
+                <IconButton onClick={() => handleDelete(row.id)}>
+                  <DeleteForeverIcon sx={{ color: "red" }} />
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -60,7 +88,7 @@ const TableBooks = ({rows}) => {
         </TableBody>
       </Table>
     </TableContainer>
-  )
-}
+  );
+};
 
-export default TableBooks
+export default TableBooks;

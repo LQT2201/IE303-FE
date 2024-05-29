@@ -15,6 +15,8 @@ import {
   CardMedia,
   Button
 } from '@mui/material'
+import Swal from 'sweetalert2';
+
 const getToken = () => {
   return localStorage.getItem('token')
 }
@@ -30,7 +32,7 @@ export default function Checkout() {
       body: address
     })
     if(resp.status == 200) {
-      alert("Đặt hàng thành công")
+      Swal.fire("Đặt hàng thành công", "", "success");
       router.push('/')
     }
   }

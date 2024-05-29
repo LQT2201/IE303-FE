@@ -10,9 +10,35 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import BuildIcon from '@mui/icons-material/Build';
 import { IconButton, Link } from '@mui/material'
 import formater from 'src/utils/formatCurrency'
+import { useRouter } from 'next/router'
+import Swal from 'sweetalert2'
 
+const BASE_URL = 'http://127.0.0.1:8080/api';
 
-const TableGenres = ({rows}) => {
+const TableGenres = ({rows, onDelete}) => {
+
+  const router = useRouter();
+
+  const handleDelete = async (id) => {
+
+      try {
+        const response = await fetch(`${BASE_URL}/genre/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          Swal.fire("Đã xóa!", "", "success");
+          router.reload()
+        } else {
+          
+        }
+      } catch (error) {
+        console.error('Error deleting book:', error);
+        
+      }
+    
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -41,7 +67,7 @@ const TableGenres = ({rows}) => {
                     <BuildIcon sx={{color:"blue"}}/>
                     </IconButton>
                 </Link>
-                <IconButton>
+                <IconButton onClick={() => handleDelete(row.id)}>
                   <DeleteForeverIcon sx={{color:"red"}}/>
                 </IconButton>
               </TableCell>

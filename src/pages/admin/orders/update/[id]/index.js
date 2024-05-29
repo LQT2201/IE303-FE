@@ -4,6 +4,7 @@ import {
   Grid, TextField, Select, MenuItem, Button, FormControl, InputLabel, OutlinedInput, CardContent, styled, Box, Typography
 } from '@mui/material';
 import formater from 'src/utils/formatCurrency';
+import Swal from 'sweetalert2';
 
 const BASE_URL = 'http://127.0.0.1:8080/api';
 
@@ -44,6 +45,7 @@ const UpdateOrder = () => {
         const data = await response.json();
         setOrder(data);
         setStatus(data.orderStatus);
+        
       } catch (error) {
         console.error('Error fetching order:', error);
       }
@@ -68,7 +70,8 @@ const UpdateOrder = () => {
         body: JSON.stringify({ status })
       });
       if (!response.ok) throw new Error('Failed to update order status');
-      alert('Order status updated successfully');
+      Swal.fire("Đã cập nhật", "", "success");
+        
     } catch (error) {
       console.error('Error updating order status:', error);
       alert('Failed to update order status');

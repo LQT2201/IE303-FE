@@ -53,9 +53,7 @@ const TableOrders = ({rows}) => {
                         <BuildIcon sx={{color:"blue"}}/>
                     </IconButton>
                 </Link>
-                <IconButton>
-                  <DeleteForeverIcon sx={{color:"red"}}/>
-                </IconButton>
+                
               </TableCell>
             </TableRow>
           ))}

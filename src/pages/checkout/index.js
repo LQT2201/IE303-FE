@@ -52,13 +52,14 @@ export default function Checkout() {
   }
   useEffect(() => {
     if(typeof window !== 'undefined'){
-      setToken(getToken())
+      const tok = getToken()
+      setToken(tok)
       const fetchUser = async () => {
         try {
           const cart = await fetch(`${BASE_URL}/user/cart`, {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`
+              Authorization: `Bearer ${tok}`
             }
           }).then(res => res.json())
           setCart(cart)

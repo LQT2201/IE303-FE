@@ -21,6 +21,9 @@ const TableAuthors = ({rows, onDelete}) => {
     try {
       const response = await fetch(`${BASE_URL}/author/${id}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
       });
 
       if (response.ok) {
@@ -41,7 +44,6 @@ const TableAuthors = ({rows, onDelete}) => {
         <TableHead>
           <TableRow>
             <TableCell>Tên tác giả</TableCell>
-            <TableCell align='center'>Giá</TableCell>
             <TableCell align='center'>Thông tin</TableCell>
             <TableCell align='center'>Ảnh</TableCell>
           </TableRow>

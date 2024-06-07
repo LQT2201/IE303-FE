@@ -9,8 +9,11 @@ const Order = () => {
   const [orders, setOrders] = React.useState([])
   React.useEffect(() => {
     const f = async() => {
-      const orders = await fetch('http://127.0.0.1:8080/api/order/all').then(r => r.json())
-      setOrders(orders)
+      if(typeof window !== 'undefined'){
+        const tok = localStorage.getItem('token')
+        const orders = await fetch('http://127.0.0.1:8080/api/order/all').then(r => r.json())
+        setOrders(orders)
+      }
     }
     f().catch(err => console.log(err))
   }, [])

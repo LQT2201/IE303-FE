@@ -25,6 +25,9 @@ const TableBooks = ({ rows, onDelete }) => {
       try {
         const response = await fetch(`${BASE_URL}/book/${id}`, {
           method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
         });
 
         if (response.ok) {

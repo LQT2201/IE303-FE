@@ -6,7 +6,7 @@ import {
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useRouter } from 'next/router'
-
+import Swal from 'sweetalert2'
 const CustomInput = forwardRef((props, ref) => {
   return <TextField inputRef={ref} label='Birth Date' fullWidth {...props} />
 })

@@ -87,7 +87,7 @@ const ProductDetail = (params) => {
       console.log(error);
     }
   };
-
+  const [author, setAuthor] = useState(null)
   useEffect(() => {
     const fetchBookData = async () => {
       if (!router.query.id) return;
@@ -96,11 +96,17 @@ const ProductDetail = (params) => {
         const bookResponse = await fetch(`${BASE_URL}/book/${router.query.id}`);
         const bookData = await bookResponse.json();
         setBook(bookData);
-
         const relatedBooksResponse = await fetch(`${BASE_URL}/book?genre=${bookData.genre}`);
         const relatedBooksData = await relatedBooksResponse.json();
         setRelatedBooks(relatedBooksData);
-
+        const authors = await fetch(`${BASE_URL}/author`).then(res => res.json())
+        console.log(authors)
+        for(const author of authors) {
+          if(author && (author.name == bookData.author)) {
+            setAuthor(author)
+            break
+          }
+        }
         const recommendationsResponse = await fetch(
           `${BASE_URL}/recommend?numberOfRecommendations=3`,
           {
@@ -112,7 +118,7 @@ const ProductDetail = (params) => {
         const recommendationsData = await recommendationsResponse.json();
         setRecommendations(recommendationsData);
 
-        console.log(recommendations)
+        // console.log(recommendations)
 
         setIsLoading(false);
       } catch (error) {
@@ -166,7 +172,7 @@ const ProductDetail = (params) => {
           </Box>
           <Box>
             <Grid item md={6}>
-              <Link href={`/author/${book.author}`}>
+              <Link href={`/author/${author ? author.id : ''}`}>
                 <p>Tác giả {`${book.author}`}</p>
               </Link>
             </Grid>

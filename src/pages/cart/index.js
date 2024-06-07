@@ -33,10 +33,11 @@ const CartPage = () => {
           const cart = await fetch(`${BASE_URL}/user/cart`, {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`
+              Authorization: `Bearer ${tok}`
             }
           }).then(res => res.json())
           setCart(cart)
+          console.log(cart)
         } catch (error) {
           console.log(error)
         }
